@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "client": "cd coreui && npm start",
+    "server": "cd server && php artisan serve",
+    "start": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
