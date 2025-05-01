@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "client": "cd coreui && npm start",
+    "client": "cd client && npm start",
     "server": "cd server && php artisan serve",
     "start": "concurrently \"npm run client\" \"npm run server\""
   },

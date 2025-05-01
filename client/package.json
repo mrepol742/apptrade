@@ -1,15 +1,15 @@
 {
-  "name": "@apptrade/apptrade-mc",
+  "name": "@apptrade/apptrade",
   "version": "1.0",
   "description": "",
   "homepage": ".",
   "private": true,
   "bugs": {
-    "url": "https://github.com/apptrade/apptrade-mc/issues"
+    "url": "https://github.com/mrepol742/apptrade/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:apptrade/apptrade-mc.git"
+    "url": "git@github.com:mrepol742/apptrade.git"
   },
   "license": "MIT",
   "author": "Melvin Jones Repol",
