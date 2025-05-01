@@ -1,10 +1,10 @@
 {
-  "short_name": "CoreUI-React",
-  "name": "CoreUI-React sample",
+  "short_name": "Apptrade",
+  "name": "Apptrade",
   "icons": [
     {
-      "src": "./assets/img/favicon.png",
-      "sizes": "100x100",
+      "src": "/favicon.png",
+      "sizes": "639x306",
       "type": "image/png"
     }
   ],

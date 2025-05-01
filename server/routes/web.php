@@ -2,9 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect('http://localhost:3000');
-});
+Route::get('/', fn() => view('index'));
 
 Route::group(['prefix' => 'api'], function () {
     Route::post('/login', [\App\Http\Auth\AuthController::class, 'login']);
@@ -26,3 +24,6 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/groups', [\App\Http\Controllers\GroupController::class, 'getGroups']);
     Route::post('/products', [\App\Http\Controllers\ProductController::class, 'createProduct']);
 });
+
+// Catch-all route to redirect all other client routes to the index view
+Route::fallback(fn() => view('index'));

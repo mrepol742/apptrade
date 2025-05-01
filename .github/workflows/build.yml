@@ -1,0 +1,51 @@
+name: Build
+
+on:
+    push:
+        branches: ["master"]
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Lint client
+        run: |
+          cd client
+          npm i
+          npm run lint
+          cd ..
+
+      - name: Build client
+        run: |
+          cd client
+          npm run build
+          cp build/assets ../server/public/ -r
+          cp build/index.html ../server/resources/views/index.blade.php
+        
+      - name: Get latest commit hash
+        run: |
+          echo "MASTER_COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "COMMIT_URL=https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Upload
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: server/
+          destination-github-username: 'mrepol742'
+          destination-repository-name: 'apptrade'
+          user-name: github-actions[bot]
+          user-email: github-actions[bot]@users.noreply.github.com
+          commit-message: "Build from ${{ env.COMMIT_URL }}"
+          target-branch: production
