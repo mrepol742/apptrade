@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CSpinner } from '@coreui/react'
+import PropTypes from 'prop-types'
 
 const Auth = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -21,3 +22,7 @@ const Auth = ({ children }) => {
 }
 
 export default Auth
+
+Auth.propTypes = {
+    children: PropTypes.node,
+}

@@ -147,14 +147,17 @@ const NewProduct = () => {
                     />
                 </CCol>
                 <CCol xs={12} md={6}>
-                     <CFormSelect
+                    <CFormSelect
                         id="department_id"
                         floatingClassName="mb-3"
                         floatingLabel="Department"
                         onChange={handleSelectChange}
                         options={[
                             { label: 'Select a department', value: '' },
-                            ...department.map((d) => ({ label: d.name, value: d.id })),
+                            ...department.map((d) => ({
+                                label: d.name,
+                                value: d.id,
+                            })),
                         ]}
                     />
                 </CCol>
@@ -200,12 +203,20 @@ const NewProduct = () => {
                         onChange={handleSelectChange}
                         options={[
                             { label: 'Select a group', value: '' },
-                            ...group.map((g) => ({ label: g.name, value: g.id })),
+                            ...group.map((g) => ({
+                                label: g.name,
+                                value: g.id,
+                            })),
                         ]}
                     />
                 </CCol>
             </CRow>
-            <CFormSwitch onChange={handleSwitchChange} label="Active" id="is_active" defaultChecked />
+            <CFormSwitch
+                onChange={handleSwitchChange}
+                label="Active"
+                id="is_active"
+                defaultChecked
+            />
             <CFormSwitch
                 onChange={handleSwitchChange}
                 label="Default Quantity"

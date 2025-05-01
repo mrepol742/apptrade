@@ -39,7 +39,6 @@ const Products = () => {
         )
     }
 
-
     return (
         <div>
             <Helmet>

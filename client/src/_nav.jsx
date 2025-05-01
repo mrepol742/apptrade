@@ -25,11 +25,11 @@ const _nav = [
         icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
     },
     {
-      component: CNavItem,
-      name: 'Departments',
-      to: '/departments',
-      icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
-  },
+        component: CNavItem,
+        name: 'Departments',
+        to: '/departments',
+        icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
+    },
     {
         component: CNavItem,
         name: 'Products',

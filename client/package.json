@@ -15,7 +15,7 @@
   "author": "Melvin Jones Repol",
   "scripts": {
     "build": "vite build",
-    "lint": "eslint",
+    "pretty": "eslint \"src/**/*.jsx\" --fix",
     "serve": "vite preview",
     "start": "vite"
   },
@@ -48,15 +48,17 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.20.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^15.15.0",
     "postcss": "^8.5.2",
-    "prettier": "3.5.1",
+    "prettier": "3.3.2",
     "sass": "^1.85.0",
-    "vite": "^6.1.0"
+    "vite": "^6.1.0",
+    "vite-plugin-banner": "^0.8.1",
+    "vite-plugin-html-minifier": "^1.0.5"
   }
 }

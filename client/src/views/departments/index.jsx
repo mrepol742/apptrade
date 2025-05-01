@@ -37,7 +37,6 @@ const Departments = () => {
         )
     }
 
-
     return (
         <div>
             <Helmet>
@@ -48,10 +47,10 @@ const Departments = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h1>Departments</h1>
                         <CButton
-                           className="d-block d-xl-none"
-                           size="sm"
-                           color="primary"
-                           onClick={() => navigate('/new-department')}
+                            className="d-block d-xl-none"
+                            size="sm"
+                            color="primary"
+                            onClick={() => navigate('/new-department')}
                         >
                             Add Department
                         </CButton>

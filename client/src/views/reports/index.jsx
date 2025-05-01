@@ -5,8 +5,8 @@ const Reports = () => {
     return (
         <div>
             <Helmet>
-                            <title>Reports - Apptrade</title>
-                            </Helmet>
+                <title>Reports - Apptrade</title>
+            </Helmet>
             <h1>Reports</h1>
             <p>This is the reports page.</p>
         </div>

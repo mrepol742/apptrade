@@ -107,7 +107,10 @@ const NewProduct = () => {
                         onChange={handleSelectChange}
                         options={[
                             { label: 'Select a department', value: '' },
-                            ...departments.map((d) => ({ label: d.name, value: d.id })),
+                            ...departments.map((d) => ({
+                                label: d.name,
+                                value: d.id,
+                            })),
                         ]}
                     />
                 </CCol>
@@ -125,7 +128,7 @@ const NewProduct = () => {
                     />
                 </CCol>
                 <CCol xs={12} md={6}>
-                <CFormInput
+                    <CFormInput
                         type="number"
                         id="phone"
                         floatingClassName="mb-3"
@@ -149,7 +152,7 @@ const NewProduct = () => {
                     />
                 </CCol>
                 <CCol xs={12} md={6}>
-                <CFormSelect
+                    <CFormSelect
                         id="role"
                         floatingClassName="mb-3"
                         floatingLabel="Role"
@@ -167,7 +170,7 @@ const NewProduct = () => {
             </CRow>
             <CRow>
                 <CCol xs={12} md={6}>
-                <CFormSelect
+                    <CFormSelect
                         id="status"
                         floatingClassName="mb-3"
                         floatingLabel="Status"
@@ -180,7 +183,7 @@ const NewProduct = () => {
                     />
                 </CCol>
                 <CCol xs={12} md={6}>
-                <CFormInput
+                    <CFormInput
                         type="text"
                         id="password"
                         floatingClassName="mb-3"

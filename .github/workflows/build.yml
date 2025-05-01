@@ -21,7 +21,7 @@ jobs:
         run: |
           cd client
           npm i
-          npm run lint
+          npm run pretty
           cd ..
 
       - name: Build client

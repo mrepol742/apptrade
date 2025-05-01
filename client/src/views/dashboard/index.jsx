@@ -16,9 +16,9 @@ import { Helmet } from 'react-helmet'
 const Dashboard = () => {
     return (
         <CRow>
-          <Helmet>
+            <Helmet>
                 <title>Dashboard - Apptrade</title>
-                </Helmet>
+            </Helmet>
             <CCol sm={6}>
                 <CWidgetStatsA
                     className="mb-4"

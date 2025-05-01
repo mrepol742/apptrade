@@ -65,7 +65,6 @@ const NewDepartment = () => {
                         required
                     />
                 </CCol>
-               
             </CRow>
         </CForm>
     )
