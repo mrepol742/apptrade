@@ -58,4 +58,19 @@ class ProductController extends Controller
 
         return response()->json($product, 201);
     }
+
+    /**
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProduct(Request $request, $id)
+    {
+        $product = Product::where('id', $id)
+            ->orWhere('name', $id)
+            ->orWhere('code', $id)
+            ->orWhere('barcode', $id)
+            ->get();
+        return response()->json($product);
+    }
 }

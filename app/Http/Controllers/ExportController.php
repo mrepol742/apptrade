@@ -36,4 +36,19 @@ class ExportController extends Controller
 
         return (new FastExcel(collect($data)))->download("products.xlsx");
     }
+
+    public function exportDepartments()
+    {
+
+        $data = [];
+        $departments = \App\Models\Department::all();
+
+        $data[] = array_keys($departments->first()->toArray());
+
+        foreach ($departments as $department) {
+            $data[] = $department->toArray();
+        }
+
+        return (new FastExcel(collect($data)))->download("departments.xlsx");
+    }
 }
