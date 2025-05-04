@@ -26,7 +26,7 @@ const Auth = () => {
         }
 
         if (user || session_id) return checkAuthStatus()
-        navigate('/')
+        navigate('/login')
     }
 
     useEffect(() => {
