@@ -29,6 +29,10 @@ const Users = () => {
         }
     }
 
+    const exportUsers = async () => {
+        window.open('http://localhost:8000/api/export/users', '_blank')
+    }
+
     if (users.length === 0) {
         return (
             <div className="d-flex justify-content-center align-items-center vh-100">
@@ -46,14 +50,24 @@ const Users = () => {
                 <CCol>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h1>Users</h1>
-                        <CButton
-                            className="d-block d-xl-none"
-                            size="sm"
-                            color="primary"
-                            onClick={() => navigate('/new-user')}
-                        >
-                            Add User
-                        </CButton>
+                        <div>
+                            <CButton
+                                size="sm"
+                                className="me-1"
+                                color="primary"
+                                onClick={() => exportUsers()}
+                            >
+                                Export
+                            </CButton>
+                            <CButton
+                                className="d-inline d-xl-none"
+                                size="sm"
+                                color="primary"
+                                onClick={() => navigate('/new-user')}
+                            >
+                                Add
+                            </CButton>
+                        </div>
                     </div>
                     <CTable striped bordered hover responsive>
                         <CTableHead>

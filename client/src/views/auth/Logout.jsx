@@ -18,7 +18,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Logout = () => {
     useEffect(() => {
-        cookies.remove('asasas')
+        cookies.remove('session_id')
         window.location.href = '/login'
     }, [])
 

@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(
             except: ['/api/*']
         );
+        $middleware->alias([
+            'verify.session' => \App\Http\Middleware\VerifySession::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

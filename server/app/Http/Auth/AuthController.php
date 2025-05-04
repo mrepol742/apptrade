@@ -34,4 +34,40 @@ class AuthController extends Controller
             'message' => 'Invalid credentials',
         ], 401);
     }
+
+    /**
+     * Handle login request and return a session token.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifySession(Request $request)
+    {
+        $sessionId = $request->input('session_id');
+
+        if (Session::getId() === $sessionId && Auth::check()) {
+            return response()->json([
+                'message' => 'Session is active',
+                'user' => Auth::user()
+            ]);
+        }
+
+        return response()->json(['message' => 'Session is inactive or invalid'], 401);
+    }
+
+    /**
+     * Handle login request and return a session token.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['message' => 'Logout successful']);
+    }
 }

@@ -34,10 +34,10 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        const response = await axios.post('/login', formData)
+        const response = await axios.post('/auth/login', formData)
         if (response.status === 200) {
             alert('Login successful')
-            cookies.set('asasas', response.data.session_token, {
+            cookies.set('session_id', response.data.session_token, {
                 expires: 1,
             })
             window.location.href = '/'

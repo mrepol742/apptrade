@@ -31,6 +31,10 @@ const Products = () => {
         }
     }
 
+    const exportProducts = async () => {
+        window.open('http://localhost:8000/api/export/products', '_blank')
+    }
+
     if (products.length === 0) {
         return (
             <div className="d-flex justify-content-center align-items-center vh-100">
@@ -48,14 +52,32 @@ const Products = () => {
                 <CCol>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h1>Products</h1>
-                        <CButton
-                            className="d-block d-xl-none"
-                            size="sm"
-                            color="primary"
-                            onClick={() => navigate('/new-product')}
-                        >
-                            Add Product
-                        </CButton>
+                        <div>
+                            <CButton
+                                size="sm"
+                                className="me-1"
+                                color="primary"
+                                onClick={() => alert('Import Products')}
+                            >
+                                Import
+                            </CButton>
+                            <CButton
+                                size="sm"
+                                className="me-1"
+                                color="primary"
+                                onClick={() => exportProducts()}
+                            >
+                                Export
+                            </CButton>
+                            <CButton
+                                className="d-inline d-xl-none"
+                                size="sm"
+                                color="primary"
+                                onClick={() => navigate('/new-product')}
+                            >
+                                Add
+                            </CButton>
+                        </div>
                     </div>
                     <CTable striped bordered hover responsive>
                         <CTableHead>

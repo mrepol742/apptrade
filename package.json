@@ -4,7 +4,10 @@
   "scripts": {
     "client": "cd client && npm start",
     "server": "cd server && php artisan serve",
-    "start": "concurrently \"npm run client\" \"npm run server\""
+    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "install": "concurrently \"npm run client:install\" \"npm run server:install\"",
+    "client:install": "cd client && npm install",
+    "server:install": "cd server && composer install"
   },
   "dependencies": {
     "concurrently": "^9.1.2"

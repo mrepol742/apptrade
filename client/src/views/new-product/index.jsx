@@ -123,7 +123,7 @@ const NewProduct = () => {
     return (
         <CForm onSubmit={handleSubmit} className="border rounded-3 p-4 mx-3">
             <div className="d-flex justify-content-between">
-                <h3 className="mb-3">Add New Product</h3>
+                <h3 className="mb-3">New Product</h3>
                 <div>
                     <CButton color="secondary" className="me-2" size="sm">
                         Cancel

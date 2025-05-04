@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "daily"
+    target-branch: "master"
+    labels:
+      - "composer dependencies"
+    versioning-strategy: increase-if-necessary
+  - package-ecosystem: "composer"
+    directory: "/server"
+    schedule:
+      interval: "daily"
+    target-branch: "master"
+    labels:
+      - "composer dependencies"
+    versioning-strategy: increase-if-necessary
