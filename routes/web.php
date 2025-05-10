@@ -24,6 +24,10 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/departments', [\App\Http\Controllers\ExportController::class, 'exportDepartments']);
     });
 
+    Route::group(['prefix' => 'printers'], function () {
+        Route::get('/', [\App\Http\Controllers\PrinterController::class, 'getPrinters']);
+    });
+
 
     // Global
     Route::get('/groups', [\App\Http\Controllers\GroupController::class, 'getGroups']);

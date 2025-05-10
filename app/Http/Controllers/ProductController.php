@@ -18,7 +18,6 @@ class ProductController extends Controller
         $products = Product::with(['group', 'department'])
         ->orderBy('id', 'desc')
         ->get();
-        info(Auth::user());
         return response()->json($products);
     }
 

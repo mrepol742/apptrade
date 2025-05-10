@@ -1,0 +1,5 @@
+/**
+ * © 2025 Melvin Jones Repol. All rights reserved.
+ * This project is licensed under the MIT License with Commons Clause.
+*/
+import{j as s}from"./BKBoo3Tm.js";import{c as a,Q as e,R as r,$ as o,a0 as i,f as t,a3 as l,s as c,P as n}from"./CDvYKuT6.js";import"./9B36_FC7.js";import"./ClQOd68B.js";import"./CFrBDmKk.js";import"./CGQw0KJ2.js";import"./k-NSAY8B.js";import"./BS1w9-H_.js";import"./DKL8D26R.js";const j=()=>s.jsx("div",{className:"bg-body-tertiary min-vh-100 d-flex flex-row align-items-center",children:s.jsx(a,{children:s.jsx(e,{className:"justify-content-center",children:s.jsxs(r,{md:6,children:[s.jsxs("span",{className:"clearfix",children:[s.jsx("h1",{className:"float-start display-3 me-4",children:"500"}),s.jsx("h4",{className:"pt-3",children:"Houston, we have a problem!"}),s.jsx("p",{className:"text-body-secondary float-start",children:"The page you are looking for is temporarily unavailable."})]}),s.jsxs(o,{className:"input-prepend",children:[s.jsx(i,{children:s.jsx(t,{icon:l})}),s.jsx(c,{type:"text",placeholder:"What are you looking for?"}),s.jsx(n,{color:"info",children:"Search"})]})]})})})});export{j as default};
