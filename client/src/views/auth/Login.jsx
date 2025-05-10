@@ -15,6 +15,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { toast } from 'react-toastify'
 
 const Login = () => {
     const [formData, setFormData] = React.useState({
@@ -36,13 +37,13 @@ const Login = () => {
         e.preventDefault()
         const response = await axios.post('/auth/login', formData)
         if (response.status === 200) {
-            alert('Login successful')
+            toast.success('Login successful')
             cookies.set('session_id', response.data.session_token, {
                 expires: 1,
             })
             window.location.href = '/'
         } else {
-            alert('Login failed')
+            toast.error('Login failed')
         }
     }
 
