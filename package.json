@@ -10,7 +10,6 @@
     "server:install": "cd server && composer install"
   },
   "dependencies": {
-    "concurrently": "^9.1.2",
-    "react-toastify": "^11.0.5"
+    "concurrently": "^9.1.2"
   }
 }
