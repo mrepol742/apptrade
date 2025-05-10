@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     CRow,
     CCol,
@@ -19,13 +19,15 @@ import { faClose, faSearch, faAdd, faCartPlus } from '@fortawesome/free-solid-sv
 
 const PointOfSale = () => {
     const [products, setProducts] = useState([])
+    const [selectedProduct, setSelectedProduct] = useState([])
+    const [showQuantityModal, setShowQuantityModal] = useState(false)
 
     const addProduct = (product) => {
         setProducts((prevProducts) => {
             const existingProduct = prevProducts.find((p) => p.id === product.id)
             if (existingProduct) {
                 return prevProducts.map((p) =>
-                    p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+                    p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p,
                 )
             } else {
                 return [...prevProducts, { ...product, quantity: 1 }]
@@ -34,8 +36,21 @@ const PointOfSale = () => {
     }
 
     const subTotal = products.reduce((acc, product) => {
-        return acc + product.sale_Price * product.quantity
-    }, 0);
+        return acc + product.sale_price * product.quantity
+    }, 0)
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'F1') {
+            event.preventDefault()
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [])
 
     const handleSearch = (event) => {
         const query = event.target.value.toLowerCase()
@@ -47,6 +62,31 @@ const PointOfSale = () => {
             .catch((error) => {
                 console.error('Error searching products:', error)
             })
+    }
+
+    const handleFocusClick = (product_id) => {
+        if (selectedProduct.includes(product_id))
+            return setSelectedProduct(selectedProduct.filter((id) => id !== product_id))
+        setSelectedProduct([...selectedProduct, product_id])
+    }
+
+    const handleQuantity = () => {
+        if (selectedProduct.length === 0) return alert('Select a product')
+        setShowQuantityModal(true)
+    }
+
+    const handleDelete = () => {
+        if (selectedProduct.length === 0) return alert('Select a product')
+        setProducts((prevProducts) =>
+            prevProducts.filter((product) => !selectedProduct.includes(product.id)),
+        )
+        setSelectedProduct([])
+    }
+
+    const handleNewSale = () => {
+        if (products.length === 0) return alert('No products in cart')
+        setProducts([])
+        setSelectedProduct([])
     }
 
     return (
@@ -81,12 +121,16 @@ const PointOfSale = () => {
                         ) : (
                             <CTableBody>
                                 {products.map((product, index) => (
-                                    <CTableRow key={index}>
+                                    <CTableRow
+                                        key={index}
+                                        active={selectedProduct.includes(product.id)}
+                                        onClick={() => handleFocusClick(product.id)}
+                                    >
                                         <CTableDataCell>{product.name}</CTableDataCell>
-                                        <CTableDataCell>{product.sale_Price}</CTableDataCell>
+                                        <CTableDataCell>{product.sale_price}</CTableDataCell>
                                         <CTableDataCell>{product.quantity}</CTableDataCell>
                                         <CTableDataCell>
-                                            {product.sale_Price * product.quantity}
+                                            {product.sale_price * product.quantity}
                                         </CTableDataCell>
                                     </CTableRow>
                                 ))}
@@ -115,9 +159,8 @@ const PointOfSale = () => {
             >
                 <div className="d-flex justify-content-between align-items-center mb-3 mt-2 text-center">
                     <div
-                        className="py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
-                        onClick={() => alert('Delete')}
+                        className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
+                        onClick={handleDelete}
                         style={{ flex: 1 }}
                     >
                         <FontAwesomeIcon
@@ -128,22 +171,8 @@ const PointOfSale = () => {
                         Delete
                     </div>
                     <div
-                        className="py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
-                        onClick={() => alert('Search')}
-                        style={{ flex: 1 }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faSearch}
-                            className="mb-2"
-                            style={{ width: '50px', height: '50px' }}
-                        />
-                        Search
-                    </div>
-                    <div
-                        className="py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
-                        onClick={() => alert('Import Products')}
+                        className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
+                        onClick={handleQuantity}
                         style={{ flex: 1 }}
                     >
                         <FontAwesomeIcon
@@ -154,9 +183,8 @@ const PointOfSale = () => {
                         Quantity
                     </div>
                     <div
-                        className="py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
-                        onClick={() => alert('Import Products')}
+                        className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
+                        onClick={handleNewSale}
                         style={{ flex: 1 }}
                     >
                         <FontAwesomeIcon
@@ -169,24 +197,21 @@ const PointOfSale = () => {
                 </div>
                 <div className="d-flex justify-content-between align-items-center text-center">
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Cash')}
                         style={{ flex: 1 }}
                     >
                         Cash
                     </div>
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Credit Card')}
                         style={{ flex: 1 }}
                     >
                         Credit Card
                     </div>
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Debit Card')}
                         style={{ flex: 1 }}
                     >
@@ -195,24 +220,21 @@ const PointOfSale = () => {
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3 text-center">
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Check')}
                         style={{ flex: 1 }}
                     >
                         Check
                     </div>
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Gift Card')}
                         style={{ flex: 1 }}
                     >
                         Gift Card
                     </div>
                     <div
-                        className="py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                        color="primary"
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
                         onClick={() => alert('Voucher')}
                         style={{ flex: 1 }}
                     >

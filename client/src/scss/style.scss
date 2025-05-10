@@ -67,3 +67,15 @@ body {
     --cui-footer-bg: var(--cui-body-bg);
   }
 }
+
+.auth-bg {
+  background-image: url('/images/cover.jpg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.3;
+}

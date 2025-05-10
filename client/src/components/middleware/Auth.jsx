@@ -21,7 +21,7 @@ const Auth = () => {
                 setStatus('authenticated')
             } catch (error) {
                 cookies.remove('session_id')
-                navigate('/')
+                navigate('/login')
             }
         }
 

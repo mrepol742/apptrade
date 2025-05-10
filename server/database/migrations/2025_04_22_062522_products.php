@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('taxes')->default(0);
             $table->integer('cost_price')->default(0);
             $table->integer('markup')->default(0);
-            $table->integer('sale_Price')->default(0);
+            $table->integer('sale_price')->default(0);
             $table->string('color')->nullable();
             $table->text('image')->nullable();
             $table->timestamps();
