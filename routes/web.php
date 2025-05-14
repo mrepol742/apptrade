@@ -28,6 +28,9 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/', [\App\Http\Controllers\PrinterController::class, 'getPrinters']);
     });
 
+    // Sales lock cashier
+    Route::get('/sales-lock', [\App\Http\Controllers\SalesLock::class, 'getSalesLock']);
+    Route::post('/sales-lock', [\App\Http\Controllers\SalesLock::class, 'createSalesLock']);
 
     // Global
     Route::get('/groups', [\App\Http\Controllers\GroupController::class, 'getGroups']);
