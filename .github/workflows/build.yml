@@ -44,7 +44,7 @@ jobs:
         with:
           source-directory: server/
           destination-github-username: 'mrepol742'
-          destination-repository-name: 'apptrade'
+          destination-repository-name: 'apptrade-pos'
           user-name: github-actions[bot]
           user-email: github-actions[bot]@users.noreply.github.com
           commit-message: "Build from ${{ env.COMMIT_URL }}"
