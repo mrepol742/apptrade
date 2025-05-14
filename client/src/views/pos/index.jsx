@@ -13,19 +13,23 @@ import {
     CTableBody,
     CFormInput,
     CTableDataCell,
+    CSpinner,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClose, faSearch, faAdd, faCartPlus } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import DeleteModal from './modal/delete'
 import QuantityModal from './modal/quantity'
+import DiscountModal from './modal/discount'
 
 const PointOfSale = () => {
     const [products, setProducts] = useState([])
     const [selectedProduct, setSelectedProduct] = useState([])
+    const [salesLock, setSalesLock] = useState(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [showQuantityModal, setShowQuantityModal] = useState(false)
+    const [showDiscountModal, setShowDiscountModal] = useState(false)
     const [showNewSaleModal, setShowNewSaleModal] = useState(false)
     const [isDirty, setIsDirty] = useState(false)
 
@@ -34,25 +38,27 @@ const PointOfSale = () => {
             const existingProduct = prevProducts.find((p) => p.id === product.id)
             if (existingProduct) {
                 return prevProducts.map((p) =>
-                    p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p,
+                    p.id === product.id ? { ...p, quantity: p.quantity + 1, discount: 0 } : p,
                 )
             } else {
-                return [...prevProducts, { ...product, quantity: 1 }]
+                return [...prevProducts, { ...product, quantity: 1, discount: 0 }]
             }
         })
     }
 
     const subTotal = products
         .reduce((acc, product) => {
-            return acc + product.sale_price * product.quantity
+            const discountedPrice = product.sale_price * (1 - product.discount / 100)
+            return acc + discountedPrice * product.quantity
         }, 0)
         .toFixed(2)
 
     const totalTaxes = products
         .reduce((acc, product) => {
+            const discountedPrice = product.sale_price * (1 - product.discount / 100)
             return (
                 acc +
-                (product.taxes ? (product.sale_price * product.taxes) / 100 : 0) * product.quantity
+                (product.taxes ? (discountedPrice * product.taxes) / 100 : 0) * product.quantity
             )
         }, 0)
         .toFixed(2)
@@ -60,9 +66,50 @@ const PointOfSale = () => {
     const total = (parseFloat(subTotal) + parseFloat(totalTaxes)).toFixed(2)
 
     const handleKeyDown = (event) => {
-        if (event.key === 'F1') {
+        if (event.key === 'F2') {
             event.preventDefault()
+            handleDiscount()
+        } else if (event.key === 'F4') {
+            event.preventDefault()
+            handleQuantity()
+        } else if (event.key === 'Delete') {
+            event.preventDefault()
+            handleDelete()
         }
+    }
+
+    const fetchSalesLock = async () => {
+        axios
+            .get(`/sales-lock`)
+            .then((response) => {
+                if (response.data.length > 0) {
+                    setSalesLock(true)
+                    setProducts(JSON.parse(response.data))
+                } else {
+                    setSalesLock(false)
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching sales lock:', error)
+            })
+    }
+
+    const handleSalesLock = async () => {
+        if (products.length === 0) return toast.error('No products in cart')
+        axios
+            .post(`/sales-lock`, {
+                products: !salesLock ? JSON.stringify(products) : '[]',
+                mode: !salesLock,
+            })
+            .then((response) => {
+                toast.success(
+                    salesLock ? 'Sales unlocked successfully' : 'Sales locked successfully',
+                )
+                setSalesLock(!salesLock)
+            })
+            .catch((error) => {
+                console.error('Error fetching sales lock:', error)
+            })
     }
 
     useEffect(() => {
@@ -82,7 +129,12 @@ const PointOfSale = () => {
         }
     }, [isDirty])
 
+    useEffect(() => {
+        fetchSalesLock()
+    }, [])
+
     const handleSearch = (event) => {
+        if (salesLock) return toast.error('Sales locked')
         const query = event.target.value.toLowerCase()
         axios
             .get(`/products/${query}`)
@@ -104,6 +156,10 @@ const PointOfSale = () => {
     const handleQuantity = () => {
         if (selectedProduct.length === 0) return toast.error('Select a product')
         setShowQuantityModal(true)
+    }
+
+    const handleDiscount = () => {
+        setShowDiscountModal(true)
     }
 
     const handleDelete = () => {
@@ -137,8 +193,15 @@ const PointOfSale = () => {
         }
     }
 
+    if (salesLock === null)
+        return (
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <CSpinner color="primary" />
+            </div>
+        )
+
     return (
-        <div className="d-flex flex-column" style={{ height: '100vh' }}>
+        <div className="d-flex flex-column" style={{ height: '100vh', userSelect: 'none' }}>
             <DeleteModal
                 data={{
                     showDeleteModal,
@@ -153,6 +216,16 @@ const PointOfSale = () => {
                 data={{
                     showQuantityModal,
                     setShowQuantityModal,
+                    products,
+                    setProducts,
+                    selectedProduct,
+                    setSelectedProduct,
+                }}
+            />
+            <DiscountModal
+                data={{
+                    showDiscountModal,
+                    setShowDiscountModal,
                     products,
                     setProducts,
                     selectedProduct,
@@ -237,7 +310,7 @@ const PointOfSale = () => {
                     <div className="flex-grow-1">
                         <div className=" d-flex justify-content-between align-items-center mb-3 mt-2 text-center">
                             <div
-                                className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
+                                className={`rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary ${selectedProduct.length > 0 ? 'bg-danger' : ''}`}
                                 onClick={handleDelete}
                                 style={{ flex: 1 }}
                             >
@@ -323,8 +396,32 @@ const PointOfSale = () => {
                     <div className="bg-body-secondary p-2 mt-auto">
                         <div className="d-flex justify-content-between align-items-center mb-3 text-center">
                             <div
+                                className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary ${salesLock ? 'bg-danger' : ''}`}
+                                onClick={handleDiscount}
+                                style={{ flex: 1 }}
+                            >
+                                Discount
+                            </div>
+                            <div
                                 className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Check')}
+                                onClick={() => alert('Gift Card')}
+                                style={{ flex: 1 }}
+                            ></div>
+                            <div
+                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
+                                onClick={() => alert('Voucher')}
+                                style={{ flex: 1 }}
+                            ></div>
+                            <div
+                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
+                                onClick={() => alert('Voucher')}
+                                style={{ flex: 1 }}
+                            ></div>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center mb-3 text-center">
+                            <div
+                                className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary ${salesLock ? 'bg-danger' : ''}`}
+                                onClick={handleSalesLock}
                                 style={{ flex: 1 }}
                             >
                                 Lock

@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect, useState, useRef, use } from 'react'
 import {
     CButton,
     CFormInput,
@@ -9,6 +8,7 @@ import {
     CModalHeader,
     CModalTitle,
 } from '@coreui/react'
+import PropTypes from 'prop-types'
 
 const QuantityInput = ({ data }) => {
     const {
@@ -19,6 +19,7 @@ const QuantityInput = ({ data }) => {
         selectedProduct,
         setSelectedProduct,
     } = data
+    const inputRef = useRef(null)
     const [quantity, setQuantity] = useState(
         products.find((product) => selectedProduct.includes(product.id))?.quantity,
     )
@@ -33,11 +34,18 @@ const QuantityInput = ({ data }) => {
         setShowQuantityModal(false)
     }
 
+    const handleClose = () => {
+        setQuantity(0)
+        setShowQuantityModal(false)
+    }
+
+    useEffect(() => {}, [])
+
     return (
         <>
             <CModal
                 visible={showQuantityModal}
-                onClose={() => setShowQuantityModal(false)}
+                onClose={handleClose}
                 aria-labelledby="Quantity Input"
             >
                 <CModalBody>
@@ -49,6 +57,7 @@ const QuantityInput = ({ data }) => {
                         min={1}
                         max={999}
                         onChange={(e) => setQuantity(e.target.value)}
+                        ref={inputRef}
                     />
                     <div
                         className="numpad"

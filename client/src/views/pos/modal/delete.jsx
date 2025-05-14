@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
+import PropTypes from 'prop-types'
 
 const DeleteConfirmation = ({ data }) => {
     const {
