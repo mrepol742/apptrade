@@ -10,13 +10,22 @@ const DeleteConfirmation = ({ data }) => {
         setProducts,
         selectedProduct,
         setSelectedProduct,
+        deleteMode,
     } = data
 
     const handleDelete = () => {
         if (selectedProduct.length === 0) return alert('Select a product')
-        setProducts((prevProducts) =>
-            prevProducts.filter((product) => !selectedProduct.includes(product.id)),
-        )
+        if (deleteMode === 'void') {
+            setProducts((prevProducts) =>
+                prevProducts.filter((product) => !selectedProduct.includes(product.id)),
+            )
+        } else {
+            setProducts((prevProducts) =>
+                prevProducts.map((product) =>
+                    selectedProduct.includes(product.id) ? { ...product, deleted: true } : product,
+                ),
+            )
+        }
         setSelectedProduct([])
         setShowDeleteModal(false)
     }
@@ -55,5 +64,6 @@ DeleteConfirmation.propTypes = {
         setProducts: PropTypes.func.isRequired,
         selectedProduct: PropTypes.array.isRequired,
         setSelectedProduct: PropTypes.func.isRequired,
+        deleteMode: PropTypes.string.isRequired,
     }).isRequired,
 }

@@ -47,8 +47,9 @@ const Auth = () => {
     }
 
     if (['super_admin', 'admin'].includes(user.role)) return <AdminLayout />
+    if (user.role === 'cashier') return <CashierLayout />
 
-    return <CashierLayout />
+    return <>Hello world</>
 }
 
 export default Auth

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
 import {
     CCloseButton,
     CSidebar,
@@ -19,12 +18,24 @@ import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
 import navigation from '../_nav'
+import AdminSidebar from './routes/admin'
+import CashierSidebar from './routes/cashier'
 
 const AppSidebar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const unfoldable = useSelector((state) => state.sidebarUnfoldable)
     const sidebarShow = useSelector((state) => state.sidebarShow)
+    const user = useSelector((state) => state.user)
+
+    const getSidebar = () => {
+        if (user.role === 'super_admin' || user.role === 'admin') {
+            return AdminSidebar
+        } else if (user.role === 'cashier') {
+            return CashierSidebar
+        }
+        return navigation
+    }
 
     return (
         <CSidebar
@@ -59,7 +70,7 @@ const AppSidebar = () => {
                     onClick={() => dispatch({ type: 'set', sidebarShow: false })}
                 />
             </CSidebarHeader>
-            <AppSidebarNav items={navigation} />
+            <AppSidebarNav items={getSidebar()} />
             <CSidebarFooter className="border-top d-none d-lg-flex">
                 <span onClick={(e) => navigate('/logout')}>Logout</span>
                 <CSidebarToggler

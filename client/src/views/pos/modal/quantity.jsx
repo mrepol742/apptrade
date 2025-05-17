@@ -9,6 +9,8 @@ import {
     CModalTitle,
 } from '@coreui/react'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons'
 
 const QuantityInput = ({ data }) => {
     const {
@@ -68,7 +70,7 @@ const QuantityInput = ({ data }) => {
                             marginTop: '15px',
                         }}
                     >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num, index) => (
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num, index) => (
                             <CButton
                                 key={num}
                                 color="primary"
@@ -79,22 +81,38 @@ const QuantityInput = ({ data }) => {
                             </CButton>
                         ))}
                         <CButton
-                            color="danger"
-                            onClick={() => setQuantity((prev) => prev?.slice(0, -1) || '')}
-                            style={{ gridColumn: 'span 3', width: '100%', height: '50px' }}
+                            color="outline-danger"
+                            onClick={() => setQuantity('')}
+                            style={{ height: '50px' }}
                         >
-                            Del
+                            C
+                        </CButton>
+                        <CButton
+                            color="outline-primary"
+                            onClick={() => setQuantity((prev) => parseInt(prev + '' + 0))}
+                            style={{ height: '50px' }}
+                        >
+                            0
+                        </CButton>
+                        <CButton
+                            color="outline-danger"
+                            onClick={() =>
+                                setQuantity((prev) => (prev && prev.toString().slice(0, -1)) || '')
+                            }
+                            style={{ height: '50px' }}
+                        >
+                            <FontAwesomeIcon icon={faDeleteLeft} />
+                        </CButton>
+                    </div>
+                    <div className="d-flex justify-content-end mt-3 gap-2">
+                        <CButton color="secondary" onClick={() => setShowQuantityModal(false)}>
+                            Close
+                        </CButton>
+                        <CButton color="primary" onClick={handleQuantityUpdate}>
+                            Save changes
                         </CButton>
                     </div>
                 </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setShowQuantityModal(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary" onClick={handleQuantityUpdate}>
-                        Save changes
-                    </CButton>
-                </CModalFooter>
             </CModal>
         </>
     )

@@ -1,5 +1,5 @@
 {
-  "name": "@apptrade/apptrade-pos",
+  "name": "@apptrade/apptrade",
   "version": "1.0",
   "description": "",
   "homepage": ".",
@@ -31,6 +31,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "github:fortawesome/react-fontawesome",
     "@popperjs/core": "^2.11.8",
+    "aos": "^2.3.4",
     "axios": "^1.8.4",
     "chart.js": "^4.4.7",
     "classnames": "^2.5.1",

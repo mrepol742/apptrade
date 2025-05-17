@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         // User seeder
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             \App\Models\User::factory()->create([
                 'name' => fake()->name(),
                 'email' => fake()->unique()->safeEmail(),
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'department_id' => rand(1, count($departments)),
                 'address' => fake()->address(),
                 'username' => fake()->userName(),
-                'role' => fake()->randomElement(['admin', 'user']),
+                'role' => fake()->randomElement(['super_admin', 'admin', 'cashier', 'production', 'material_control']),
                 'status' => fake()->randomElement(['active', 'inactive']),
                 'password' => bcrypt('password'),
             ]);

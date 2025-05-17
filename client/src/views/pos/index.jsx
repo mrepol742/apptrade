@@ -16,11 +16,13 @@ import {
     CSpinner,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faClose, faSearch, faAdd, faCartPlus } from '@fortawesome/free-solid-svg-icons'
+import { faDownLong } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import DeleteModal from './modal/delete'
 import QuantityModal from './modal/quantity'
 import DiscountModal from './modal/discount'
+import Controls from './sidebar/controls'
+import Menu from './sidebar/menu'
 
 const PointOfSale = () => {
     const [products, setProducts] = useState([])
@@ -31,7 +33,9 @@ const PointOfSale = () => {
     const [showQuantityModal, setShowQuantityModal] = useState(false)
     const [showDiscountModal, setShowDiscountModal] = useState(false)
     const [showNewSaleModal, setShowNewSaleModal] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
     const [isDirty, setIsDirty] = useState(false)
+    const [deleteMode, setDeleteMode] = useState(null)
 
     const addProduct = (product) => {
         setProducts((prevProducts) => {
@@ -47,6 +51,7 @@ const PointOfSale = () => {
     }
 
     const subTotal = products
+        .filter((product) => product.id !== 'discount' && !product.deleted)
         .reduce((acc, product) => {
             const discountedPrice = product.sale_price * (1 - product.discount / 100)
             return acc + discountedPrice * product.quantity
@@ -54,6 +59,7 @@ const PointOfSale = () => {
         .toFixed(2)
 
     const totalTaxes = products
+        .filter((product) => product.id !== 'discount' && !product.deleted)
         .reduce((acc, product) => {
             const discountedPrice = product.sale_price * (1 - product.discount / 100)
             return (
@@ -63,7 +69,24 @@ const PointOfSale = () => {
         }, 0)
         .toFixed(2)
 
-    const total = (parseFloat(subTotal) + parseFloat(totalTaxes)).toFixed(2)
+    const discount = products
+        .filter((product) => product.id === 'discount')
+        .reduce((acc, product) => acc + (product.discount || 0), 0)
+
+    const total = (
+        (parseFloat(subTotal) + parseFloat(totalTaxes)) *
+        (1 - parseFloat(discount) / 100)
+    ).toFixed(2)
+
+    const calculateTotal = (itemPrice, itemQuantity, itemDiscount = 0) => {
+        const discountedPrice = itemPrice * (1 - itemDiscount / 100)
+        return (discountedPrice * itemQuantity).toFixed(2)
+    }
+
+    const calculatePrice = (itemPrice, itemDiscount = 0) => {
+        const discountedPrice = itemPrice * (1 - itemDiscount / 100)
+        return discountedPrice.toFixed(2)
+    }
 
     const handleKeyDown = (event) => {
         if (event.key === 'F2') {
@@ -139,6 +162,7 @@ const PointOfSale = () => {
         axios
             .get(`/products/${query}`)
             .then((response) => {
+                if (response.data.length === 0) return toast.error('Product not found')
                 addProduct(response.data[0])
                 setIsDirty(true)
             })
@@ -154,17 +178,21 @@ const PointOfSale = () => {
     }
 
     const handleQuantity = () => {
+        if (salesLock) return toast.error('Sales locked')
         if (selectedProduct.length === 0) return toast.error('Select a product')
         setShowQuantityModal(true)
     }
 
     const handleDiscount = () => {
+        if (salesLock) return toast.error('Sales locked')
         setShowDiscountModal(true)
     }
 
-    const handleDelete = () => {
+    const handleDelete = (mode) => {
+        if (salesLock) return toast.error('Sales locked')
         if (selectedProduct.length === 0) return toast.error('Select a product')
         setShowDeleteModal(true)
+        setDeleteMode(mode)
     }
 
     const handleNewSale = () => {
@@ -173,24 +201,35 @@ const PointOfSale = () => {
         setSelectedProduct([])
     }
 
+    const handlePayment = () => {
+        if (salesLock) return toast.error('Sales locked')
+        if (products.length === 0) return toast.error('No products in cart')
+        // setShowNewSaleModal(true)
+        // setProducts([])
+        // setSelectedProduct([])
+        // setSalesLock(false)
+        // setIsDirty(false)
+        // setSearchQuery('')
+    }
+
     const handleSearchInput = (event) => {
         setSearchQuery(event.target.value)
 
-        if (event.target.value.length > 0) {
-            const currentTime = new Date().getTime()
-            if (!event.target.lastInputTime) {
-                event.target.lastInputTime = currentTime
-            } else {
-                const timeDifference = currentTime - event.target.lastInputTime
-                event.target.lastInputTime = currentTime
-
-                if (timeDifference < 50) {
-                    handleSearch(event)
-                    event.target.value = ''
-                    setSearchQuery('')
-                }
-            }
-        }
+        // if (event.target.value.length > 0) {
+        //     const currentTime = new Date().getTime()
+        //     if (!event.target.lastInputTime) {
+        //         event.target.lastInputTime = currentTime
+        //     } else {
+        //         const timeDifference = currentTime - event.target.lastInputTime
+        //         event.target.lastInputTime = currentTime
+        //         console.log(timeDifference + 'ms')
+        //         if (timeDifference > 1000) {
+        //             handleSearch(event)
+        //             event.target.value = ''
+        //             setSearchQuery('')
+        //         }
+        //     }
+        // }
     }
 
     if (salesLock === null)
@@ -201,7 +240,10 @@ const PointOfSale = () => {
         )
 
     return (
-        <div className="d-flex flex-column" style={{ height: '100vh', userSelect: 'none' }}>
+        <div
+            className="d-flex flex-column"
+            style={{ height: '100vh', width: '99.3%', userSelect: 'none' }}
+        >
             <DeleteModal
                 data={{
                     showDeleteModal,
@@ -210,6 +252,7 @@ const PointOfSale = () => {
                     setProducts,
                     selectedProduct,
                     setSelectedProduct,
+                    deleteMode,
                 }}
             />
             <QuantityModal
@@ -241,6 +284,11 @@ const PointOfSale = () => {
                         aria-label="Search"
                         value={searchQuery}
                         onChange={handleSearchInput}
+                        autoFocus
+                        onFocus={(event) => {
+                            event.target.select()
+                            event.target.setSelectionRange(0, event.target.value.length)
+                        }}
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                                 handleSearch(event)
@@ -253,15 +301,39 @@ const PointOfSale = () => {
                         <CTable hover responsive>
                             <CTableHead>
                                 <CTableRow>
-                                    <CTableHeaderCell scope="col">Product</CTableHeaderCell>
-                                    <CTableHeaderCell scope="col">Price</CTableHeaderCell>
-                                    <CTableHeaderCell scope="col">Quantity</CTableHeaderCell>
-                                    <CTableHeaderCell scope="col">Total</CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        scope="col"
+                                        className="text-uppercase"
+                                        style={{ minWidth: 180 }}
+                                    >
+                                        Product
+                                    </CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        scope="col"
+                                        className="text-uppercase text-center"
+                                        style={{ width: 80, maxWidth: 100 }}
+                                    >
+                                        Quantity
+                                    </CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        scope="col"
+                                        className="text-uppercase text-end"
+                                        style={{ width: 100, maxWidth: 120 }}
+                                    >
+                                        Price
+                                    </CTableHeaderCell>
+                                    <CTableHeaderCell
+                                        scope="col"
+                                        className="text-uppercase text-end"
+                                        style={{ width: 110, maxWidth: 130 }}
+                                    >
+                                        Total
+                                    </CTableHeaderCell>
                                 </CTableRow>
                             </CTableHead>
                             {products.length === 0 ? (
-                                <div className="text-center">
-                                    <h1>No items</h1>
+                                <div className="position-absolute top-50 start-50 translate-middle text-center">
+                                    <h3 className="text-muted mb-0">No items in cart</h3>
                                 </div>
                             ) : (
                                 <CTableBody>
@@ -270,185 +342,119 @@ const PointOfSale = () => {
                                             ? product.sale_price +
                                               (product.sale_price * product.taxes) / 100
                                             : product.sale_price
-                                        return (
-                                            <CTableRow
-                                                key={index}
-                                                active={selectedProduct.includes(product.id)}
-                                                onClick={() => handleFocusClick(product.id)}
-                                            >
-                                                <CTableDataCell>{product.name}</CTableDataCell>
-                                                <CTableDataCell>
-                                                    {priceWithTax.toFixed(2)}
-                                                </CTableDataCell>
-                                                <CTableDataCell>{product.quantity}</CTableDataCell>
-                                                <CTableDataCell>
-                                                    {(priceWithTax * product.quantity).toFixed(2)}
-                                                </CTableDataCell>
-                                            </CTableRow>
-                                        )
+
+                                        if (product.id !== 'discount')
+                                            return (
+                                                <CTableRow
+                                                    key={index}
+                                                    active={selectedProduct.includes(product.id)}
+                                                    onClick={() => handleFocusClick(product.id)}
+                                                >
+                                                    <CTableDataCell style={{ minWidth: 180 }}>
+                                                        <span
+                                                            className={`${product.deleted && 'text-danger'}`}
+                                                        >
+                                                            {product.name}
+                                                        </span>
+                                                        <span
+                                                            className={`${product.deleted && 'text-danger'} d-block`}
+                                                            style={{ fontSize: '0.7em' }}
+                                                        >
+                                                            {product.barcode}
+                                                        </span>
+                                                    </CTableDataCell>
+                                                    <CTableDataCell
+                                                        className={`${product.deleted && 'text-danger'} text-end`}
+                                                        style={{ width: 80, maxWidth: 100 }}
+                                                    >
+                                                        {product.quantity}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell
+                                                        className={`${product.deleted && 'text-danger'} text-end`}
+                                                        style={{ width: 100, maxWidth: 120 }}
+                                                    >
+                                                        {product.discount > 0 && (
+                                                            <FontAwesomeIcon
+                                                                icon={faDownLong}
+                                                                className={`${product.deleted ? 'text-danger' : 'text-success'} me-1`}
+                                                                style={{
+                                                                    width: '12px',
+                                                                    height: '12px',
+                                                                }}
+                                                            />
+                                                        )}
+                                                        {calculatePrice(
+                                                            priceWithTax,
+                                                            product.discount,
+                                                        )}
+                                                    </CTableDataCell>
+                                                    <CTableDataCell
+                                                        className={`${product.deleted && 'text-danger'} text-end`}
+                                                        style={{ width: 110, maxWidth: 130 }}
+                                                    >
+                                                        {calculateTotal(
+                                                            priceWithTax,
+                                                            product.quantity,
+                                                            product.discount,
+                                                        )}
+                                                    </CTableDataCell>
+                                                </CTableRow>
+                                            )
                                     })}
                                 </CTableBody>
                             )}
                         </CTable>
                     </div>
-                    <div className="bg-body-secondary p-2 mt-auto">
+                    <div className="bg-body-secondary p-3 m-3 rounded mt-auto">
                         <div className="d-flex justify-content-between">
                             <span>Subtotal:</span>
                             <span>{subTotal}</span>
                         </div>
-                        <div className="d-flex justify-content-between">
+                        {discount > 0 && (
+                            <div className="d-flex justify-content-between">
+                                <span>Discount:</span>
+                                <span>{discount}%</span>
+                            </div>
+                        )}
+                        <div className="d-flex justify-content-between  border-bottom border-secondary pb-2">
                             <span>Tax:</span>
                             <span>{totalTaxes}</span>
                         </div>
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between pt-2">
                             <strong>Total:</strong>
                             <strong>{total}</strong>
                         </div>
                     </div>
                 </CCol>
-                <CCol lg={5} xl={3} className="d-flex flex-column bg-body-secondary rounded m-2">
-                    <div className="flex-grow-1">
-                        <div className=" d-flex justify-content-between align-items-center mb-3 mt-2 text-center">
-                            <div
-                                className={`rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary ${selectedProduct.length > 0 ? 'bg-danger' : ''}`}
-                                onClick={handleDelete}
-                                style={{ flex: 1 }}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faClose}
-                                    className="mb-2"
-                                    style={{ width: '50px', height: '50px' }}
-                                />
-                                Delete
-                            </div>
-                            <div
-                                className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={handleQuantity}
-                                style={{ flex: 1 }}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faCartPlus}
-                                    className="mb-2"
-                                    style={{ width: '50px', height: '50px' }}
-                                />
-                                Quantity
-                            </div>
-                            <div
-                                className="rounded py-5 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={handleNewSale}
-                                style={{ flex: 1 }}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faAdd}
-                                    className="mb-2"
-                                    style={{ width: '50px', height: '50px' }}
-                                />
-                                New Sale
-                            </div>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center text-center">
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Cash')}
-                                style={{ flex: 1 }}
-                            >
-                                Cash
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Credit Card')}
-                                style={{ flex: 1 }}
-                            >
-                                Credit Card
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Debit Card')}
-                                style={{ flex: 1 }}
-                            >
-                                Debit Card
-                            </div>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center mb-3 text-center">
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Check')}
-                                style={{ flex: 1 }}
-                            >
-                                Check
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Gift Card')}
-                                style={{ flex: 1 }}
-                            >
-                                Gift Card
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Voucher')}
-                                style={{ flex: 1 }}
-                            >
-                                Voucher
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-body-secondary p-2 mt-auto">
-                        <div className="d-flex justify-content-between align-items-center mb-3 text-center">
-                            <div
-                                className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary ${salesLock ? 'bg-danger' : ''}`}
-                                onClick={handleDiscount}
-                                style={{ flex: 1 }}
-                            >
-                                Discount
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Gift Card')}
-                                style={{ flex: 1 }}
-                            ></div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Voucher')}
-                                style={{ flex: 1 }}
-                            ></div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Voucher')}
-                                style={{ flex: 1 }}
-                            ></div>
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center mb-3 text-center">
-                            <div
-                                className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary ${salesLock ? 'bg-danger' : ''}`}
-                                onClick={handleSalesLock}
-                                style={{ flex: 1 }}
-                            >
-                                Lock
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Gift Card')}
-                                style={{ flex: 1 }}
-                            >
-                                Transfer
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Voucher')}
-                                style={{ flex: 1 }}
-                            >
-                                Void
-                            </div>
-                            <div
-                                className="rounded py-3 m-1 d-flex flex-column align-items-center border border-secondary"
-                                onClick={() => alert('Voucher')}
-                                style={{ flex: 1 }}
-                            >
-                                Menu
-                            </div>
-                        </div>
-                    </div>
+                <CCol
+                    lg={5}
+                    xl={3}
+                    className="d-flex flex-column border-start border-2 border-secondary"
+                >
+                    {!showMenu ? (
+                        <Controls
+                            data={{
+                                handleDelete,
+                                handleQuantity,
+                                handleNewSale,
+                                handleDiscount,
+                                handleSalesLock,
+                                handlePayment,
+                                salesLock,
+                                selectedProduct,
+                                showMenu,
+                                setShowMenu,
+                                discount,
+                            }}
+                        />
+                    ) : (
+                        <Menu
+                            data={{
+                                showMenu,
+                                setShowMenu,
+                            }}
+                        />
+                    )}
                 </CCol>
             </CRow>
         </div>

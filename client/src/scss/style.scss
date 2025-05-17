@@ -4,6 +4,7 @@
 @use "@coreui/chartjs/scss/coreui-chartjs";
 @use "vendors/simplebar";
 @use "@fontsource/lato";
+@use 'aos/dist/aos.css';
 
 body {
   background-color: var(--cui-tertiary-bg);
