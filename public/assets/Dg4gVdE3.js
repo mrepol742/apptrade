@@ -1,0 +1,5 @@
+/**
+ * © 2025 Melvin Jones Repol. All rights reserved.
+ * This project is licensed under the MIT License with Commons Clause.
+*/
+import{a as r}from"./Cn32OB1o.js";var e,u,n={exports:{}},t={};var a=(u||(u=1,n.exports=function(){if(e)return t;e=1;var u=r(),n="function"==typeof Object.is?Object.is:function(r,e){return r===e&&(0!==r||1/r==1/e)||r!=r&&e!=e},a=u.useSyncExternalStore,o=u.useRef,i=u.useEffect,l=u.useMemo,f=u.useDebugValue;return t.useSyncExternalStoreWithSelector=function(r,e,u,t,c){var s=o(null);if(null===s.current){var v={hasValue:!1,value:null};s.current=v}else v=s.current;s=l((function(){function r(r){if(!i){if(i=!0,a=r,r=t(r),void 0!==c&&v.hasValue){var e=v.value;if(c(e,r))return o=e}return o=r}if(e=o,n(a,r))return e;var u=t(r);return void 0!==c&&c(e,u)?(a=r,e):(a=r,o=u)}var a,o,i=!1,l=void 0===u?null:u;return[function(){return r(e())},null===l?void 0:function(){return r(l())}]}),[e,u,t,c]);var p=a(r,s[0],s[1]);return i((function(){v.hasValue=!0,v.value=p}),[p]),f(p),p},t}()),n.exports);export{a as w};
