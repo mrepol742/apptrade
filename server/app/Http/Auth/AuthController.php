@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -26,7 +25,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return response()->json([
                 'message' => 'Login successful',
-                'session_token' => Session::getId(),
+                'session_token' => $request->session()->getId(),
             ], 200);
         }
 
@@ -45,6 +44,8 @@ class AuthController extends Controller
     {
         $sessionId = $request->input('session_id');
 
+        info(Session::getId());
+        info($sessionId);
         if (Session::getId() === $sessionId && Auth::check()) {
             return response()->json([
                 'message' => 'Session is active',

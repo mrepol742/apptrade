@@ -16,6 +16,8 @@ const Controls = ({ data }) => {
         showMenu,
         setShowMenu,
         discount,
+        paymentMethod,
+        setPaymentMethod,
     } = data
 
     return (
@@ -59,24 +61,25 @@ const Controls = ({ data }) => {
                         New Sale
                     </div>
                 </div>
+                <small className="ms-1">Payments</small>
                 <div className="d-flex justify-content-between align-items-center text-center">
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Cash')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'cash' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                        onClick={() => setPaymentMethod('cash')}
                         style={{ flex: 1 }}
                     >
                         Cash
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Credit Card')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'credit' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                        onClick={() => setPaymentMethod('credit')}
                         style={{ flex: 1 }}
                     >
                         Credit Card
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Debit Card')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'debit' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                        onClick={() => setPaymentMethod('debit')}
                         style={{ flex: 1 }}
                     >
                         Debit Card
@@ -84,8 +87,8 @@ const Controls = ({ data }) => {
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3 text-center">
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Check')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'check' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                        onClick={() => setPaymentMethod('check')}
                         style={{ flex: 1 }}
                     >
                         Check
@@ -180,5 +183,7 @@ Controls.propTypes = {
         showMenu: PropTypes.bool.isRequired,
         setShowMenu: PropTypes.func.isRequired,
         discount: PropTypes.string.isRequired,
+        paymentMethod: PropTypes.string.isRequired,
+        setPaymentMethod: PropTypes.func.isRequired,
     }).isRequired,
 }

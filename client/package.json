@@ -17,7 +17,7 @@
     "build": "vite build",
     "pretty": "eslint \"src/**/*.jsx\" --fix",
     "serve": "vite preview",
-    "start": "vite"
+    "start": "vite --host"
   },
   "dependencies": {
     "@coreui/chartjs": "^4.1.0",

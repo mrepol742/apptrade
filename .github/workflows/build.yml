@@ -2,7 +2,7 @@ name: Build
 
 on:
     push:
-        branches: ["master"]
+        branches: ["main"]
     workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
         run: |
           cd client
           npm ci
-          npm run pretty
+          npm run lint
           cd ..
 
       - name: Build client
@@ -29,12 +29,10 @@ jobs:
           cd client
           npm run build
           cp build/assets ../server/public/ -r
-          cp build/index.html ../server/resources/views/index.blade.php
-        
-      - name: Get latest commit hash
-        run: |
-          echo "MASTER_COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "COMMIT_URL=https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)" >> $GITHUB_ENV
+          cp build/index.html ../server/resources/views
+          rm -rf ../server/resources/views/index.blade.php
+          cp ../server/resources/views/index.html ../server/resources/views/index.blade.php
+          cd ..
 
       - name: Upload
         id: push_directory
@@ -44,8 +42,8 @@ jobs:
         with:
           source-directory: server/
           destination-github-username: 'mrepol742'
-          destination-repository-name: 'apptrade-pos'
-          user-name: github-actions[bot]
-          user-email: github-actions[bot]@users.noreply.github.com
-          commit-message: "Build from ${{ env.COMMIT_URL }}"
-          target-branch: production
+          destination-repository-name: 'apptrade'
+          user-email: mrepol742@gmail.com
+          commit-message: Production
+          target-branch: build
+          

@@ -155,9 +155,6 @@ const DiscountInput = ({ data }) => {
                         </CButton>
                     </div>
                     <div className="d-flex justify-content-end mt-3 gap-2">
-                        <CButton color="secondary" onClick={() => setShowDiscountModal(false)}>
-                            Close
-                        </CButton>
                         <CButton color="primary" onClick={handleDiscountUpdate}>
                             Save changes
                         </CButton>

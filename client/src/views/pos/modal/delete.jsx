@@ -42,9 +42,6 @@ const DeleteConfirmation = ({ data }) => {
                 </CModalHeader>
                 <CModalBody>Woohoo, confirm to delete {selectedProduct.length} items?</CModalBody>
                 <CModalFooter>
-                    <CButton color="secondary" onClick={() => setShowDeleteModal(false)}>
-                        Close
-                    </CButton>
                     <CButton color="primary" onClick={handleDelete}>
                         Save changes
                     </CButton>

@@ -21,6 +21,7 @@ import { toast } from 'react-toastify'
 import DeleteModal from './modal/delete'
 import QuantityModal from './modal/quantity'
 import DiscountModal from './modal/discount'
+import PaymentModal from './modal/payment'
 import Controls from './sidebar/controls'
 import Menu from './sidebar/menu'
 
@@ -33,6 +34,8 @@ const PointOfSale = () => {
     const [showQuantityModal, setShowQuantityModal] = useState(false)
     const [showDiscountModal, setShowDiscountModal] = useState(false)
     const [showNewSaleModal, setShowNewSaleModal] = useState(false)
+    const [showPaymentModal, setShowPaymentModal] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState('cash')
     const [showMenu, setShowMenu] = useState(false)
     const [isDirty, setIsDirty] = useState(false)
     const [deleteMode, setDeleteMode] = useState(null)
@@ -95,6 +98,9 @@ const PointOfSale = () => {
         } else if (event.key === 'F4') {
             event.preventDefault()
             handleQuantity()
+        } else if (event.key === 'F10') {
+            event.preventDefault()
+            handlePayment()
         } else if (event.key === 'Delete') {
             event.preventDefault()
             handleDelete()
@@ -204,12 +210,7 @@ const PointOfSale = () => {
     const handlePayment = () => {
         if (salesLock) return toast.error('Sales locked')
         if (products.length === 0) return toast.error('No products in cart')
-        // setShowNewSaleModal(true)
-        // setProducts([])
-        // setSelectedProduct([])
-        // setSalesLock(false)
-        // setIsDirty(false)
-        // setSearchQuery('')
+        setShowPaymentModal(true)
     }
 
     const handleSearchInput = (event) => {
@@ -273,6 +274,19 @@ const PointOfSale = () => {
                     setProducts,
                     selectedProduct,
                     setSelectedProduct,
+                }}
+            />
+            <PaymentModal
+                data={{
+                    showPaymentModal,
+                    setShowPaymentModal,
+                    products,
+                    setProducts,
+                    selectedProduct,
+                    setSelectedProduct,
+                    total,
+                    paymentMethod,
+                    setPaymentMethod,
                 }}
             />
             <CRow className="flex-grow-1 overflow-hidden">
@@ -445,6 +459,8 @@ const PointOfSale = () => {
                                 showMenu,
                                 setShowMenu,
                                 discount,
+                                paymentMethod,
+                                setPaymentMethod,
                             }}
                         />
                     ) : (
