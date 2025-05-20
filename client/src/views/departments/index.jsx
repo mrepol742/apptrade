@@ -33,14 +33,6 @@ const Departments = () => {
         window.open('http://localhost:8000/api/export/departments', '_blank')
     }
 
-    if (departments.length === 0) {
-        return (
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <h1>Loading departments...</h1>
-            </div>
-        )
-    }
-
     return (
         <div>
             <Helmet>
@@ -69,42 +61,48 @@ const Departments = () => {
                             </CButton>
                         </div>
                     </div>
-                    <CTable striped bordered hover responsive>
-                        <CTableHead>
-                            <CTableRow>
-                                <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                                <CTableHeaderCell scope="col"></CTableHeaderCell>
-                            </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                            {departments.map((department, index) => (
-                                <CTableRow key={department.id}>
-                                    <CTableDataCell>{index + 1}</CTableDataCell>
-                                    <CTableDataCell>{department.name}</CTableDataCell>
-                                    <CTableDataCell>
-                                        <div className="d-flex">
-                                            <CButton
-                                                size="sm"
-                                                color="primary"
-                                                onClick={() => alert(`Edit ${user.name}`)}
-                                            >
-                                                Edit
-                                            </CButton>
-                                            <CButton
-                                                size="sm"
-                                                color="danger"
-                                                onClick={() => alert(`Delete ${user.name}`)}
-                                                className="ms-2"
-                                            >
-                                                Delete
-                                            </CButton>
-                                        </div>
-                                    </CTableDataCell>
-                                </CTableRow>
-                            ))}
-                        </CTableBody>
-                    </CTable>
+                    {departments.length === 0 ? (
+                        <div className="d-flex justify-content-center align-items-center">
+                            <h3>Loading departments...</h3>
+                        </div>
+                    ) : (
+                        <>
+                            <CTable striped bordered hover responsive>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col"></CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {departments.map((department, index) => (
+                                        <CTableRow key={department.id}>
+                                            <CTableDataCell>{department.name}</CTableDataCell>
+                                            <CTableDataCell>
+                                                <div className="d-flex">
+                                                    <CButton
+                                                        size="sm"
+                                                        color="primary"
+                                                        onClick={() => alert(`Edit ${user.name}`)}
+                                                    >
+                                                        Edit
+                                                    </CButton>
+                                                    <CButton
+                                                        size="sm"
+                                                        color="danger"
+                                                        onClick={() => alert(`Delete ${user.name}`)}
+                                                        className="ms-2"
+                                                    >
+                                                        Delete
+                                                    </CButton>
+                                                </div>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    ))}
+                                </CTableBody>
+                            </CTable>
+                        </>
+                    )}
                 </CCol>
                 <CCol>
                     <NewDepartment />

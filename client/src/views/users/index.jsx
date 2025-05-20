@@ -33,14 +33,6 @@ const Users = () => {
         window.open('http://localhost:8000/api/export/users', '_blank')
     }
 
-    if (users.length === 0) {
-        return (
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <h1>Loading users...</h1>
-            </div>
-        )
-    }
-
     return (
         <div>
             <Helmet>
@@ -69,54 +61,60 @@ const Users = () => {
                             </CButton>
                         </div>
                     </div>
-                    <CTable striped bordered hover responsive>
-                        <CTableHead>
-                            <CTableRow>
-                                <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Department</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Username</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Role</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-                                <CTableHeaderCell scope="col"></CTableHeaderCell>
-                            </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                            {users.map((user, index) => (
-                                <CTableRow key={user.id}>
-                                    <CTableDataCell>{index + 1}</CTableDataCell>
-                                    <CTableDataCell>{user.department.name}</CTableDataCell>
-                                    <CTableDataCell>{user.name}</CTableDataCell>
-                                    <CTableDataCell>{user.username}</CTableDataCell>
-                                    <CTableDataCell>{user.role}</CTableDataCell>
-                                    <CTableDataCell>{user.email}</CTableDataCell>
-                                    <CTableDataCell>{user.phone}</CTableDataCell>
-                                    <CTableDataCell>{user.status}</CTableDataCell>
-                                    <CTableDataCell>
-                                        <div className="d-flex">
-                                            <CButton
-                                                size="sm"
-                                                color="primary"
-                                                onClick={() => alert(`Edit ${user.name}`)}
-                                            >
-                                                Edit
-                                            </CButton>
-                                            <CButton
-                                                size="sm"
-                                                color="danger"
-                                                onClick={() => alert(`Delete ${user.name}`)}
-                                                className="ms-2"
-                                            >
-                                                Delete
-                                            </CButton>
-                                        </div>
-                                    </CTableDataCell>
-                                </CTableRow>
-                            ))}
-                        </CTableBody>
-                    </CTable>
+                    {users.length === 0 ? (
+                        <div className="d-flex justify-content-center align-items-center">
+                            <h3>Loading users...</h3>
+                        </div>
+                    ) : (
+                        <>
+                            <CTable striped bordered hover responsive>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope="col">Department</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Username</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Role</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Email</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Phone</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Status</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col"></CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {users.map((user, index) => (
+                                        <CTableRow key={user.id}>
+                                            <CTableDataCell>{user.department.name}</CTableDataCell>
+                                            <CTableDataCell>{user.name}</CTableDataCell>
+                                            <CTableDataCell>{user.username}</CTableDataCell>
+                                            <CTableDataCell>{user.role}</CTableDataCell>
+                                            <CTableDataCell>{user.email}</CTableDataCell>
+                                            <CTableDataCell>{user.phone}</CTableDataCell>
+                                            <CTableDataCell>{user.status}</CTableDataCell>
+                                            <CTableDataCell>
+                                                <div className="d-flex">
+                                                    <CButton
+                                                        size="sm"
+                                                        color="primary"
+                                                        onClick={() => alert(`Edit ${user.name}`)}
+                                                    >
+                                                        Edit
+                                                    </CButton>
+                                                    <CButton
+                                                        size="sm"
+                                                        color="danger"
+                                                        onClick={() => alert(`Delete ${user.name}`)}
+                                                        className="ms-2"
+                                                    >
+                                                        Delete
+                                                    </CButton>
+                                                </div>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    ))}
+                                </CTableBody>
+                            </CTable>
+                        </>
+                    )}
                 </CCol>
                 <CCol className="d-none d-xl-block">
                     <NewUser />

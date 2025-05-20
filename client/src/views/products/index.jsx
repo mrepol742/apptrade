@@ -44,14 +44,6 @@ const Products = () => {
         window.open('http://localhost:8000/api/export/products', '_blank')
     }
 
-    if (products.length === 0) {
-        return (
-            <div className="d-flex justify-content-center align-items-center vh-100">
-                <h1>Loading products...</h1>
-            </div>
-        )
-    }
-
     return (
         <div>
             <Helmet>
@@ -88,62 +80,76 @@ const Products = () => {
                             </CButton>
                         </div>
                     </div>
-                    <CTable striped bordered hover responsive>
-                        <CTableHead>
-                            <CTableRow>
-                                <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Code</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Barcode</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Cost Price</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Sale Price</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Stock</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Department</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Group</CTableHeaderCell>
-                                <CTableHeaderCell scope="col"></CTableHeaderCell>
-                            </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                            {products.map((product, index) => (
-                                <CTableRow key={product.id}>
-                                    <CTableDataCell>{product.name}</CTableDataCell>
-                                    <CTableDataCell>{product.code}</CTableDataCell>
-                                    <CTableDataCell>{product.barcode}</CTableDataCell>
-                                    <CTableDataCell>{product.cost_price}</CTableDataCell>
-                                    <CTableDataCell>{product.sale_price}</CTableDataCell>
-                                    <CTableDataCell>
-                                        {product.is_active ? 'Yes' : 'No'}
-                                    </CTableDataCell>
-                                    <CTableDataCell>{product.department.name}</CTableDataCell>
-                                    <CTableDataCell>{product.group.name}</CTableDataCell>
-                                    <CTableDataCell>
-                                        <div className="d-flex">
-                                            <CButton
-                                                size="sm"
-                                                color="primary"
-                                                onClick={() => alert(`Edit ${product.name}`)}
-                                            >
-                                                Edit
-                                            </CButton>
-                                            <CButton
-                                                size="sm"
-                                                color="danger"
-                                                onClick={() => alert(`Delete ${product.name}`)}
-                                                className="ms-2"
-                                            >
-                                                Delete
-                                            </CButton>
-                                        </div>
-                                    </CTableDataCell>
-                                </CTableRow>
-                            ))}
-                        </CTableBody>
-                    </CTable>
-                    <AppPagination
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        totalPages={totalPages}
-                        setTotalPages={setTotalPages}
-                    />
+                    {products.length === 0 ? (
+                        <div className="d-flex justify-content-center align-items-center">
+                            <h3>Loading products...</h3>
+                        </div>
+                    ) : (
+                        <>
+                            <CTable striped bordered hover responsive>
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Code</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Barcode</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Cost Price</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Sale Price</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Stock</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Department</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col">Group</CTableHeaderCell>
+                                        <CTableHeaderCell scope="col"></CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {products.map((product, index) => (
+                                        <CTableRow key={product.id}>
+                                            <CTableDataCell>{product.name}</CTableDataCell>
+                                            <CTableDataCell>{product.code}</CTableDataCell>
+                                            <CTableDataCell>{product.barcode}</CTableDataCell>
+                                            <CTableDataCell>{product.cost_price}</CTableDataCell>
+                                            <CTableDataCell>{product.sale_price}</CTableDataCell>
+                                            <CTableDataCell>
+                                                {product.is_active ? 'Yes' : 'No'}
+                                            </CTableDataCell>
+                                            <CTableDataCell>
+                                                {product.department.name}
+                                            </CTableDataCell>
+                                            <CTableDataCell>{product.group.name}</CTableDataCell>
+                                            <CTableDataCell>
+                                                <div className="d-flex">
+                                                    <CButton
+                                                        size="sm"
+                                                        color="primary"
+                                                        onClick={() =>
+                                                            alert(`Edit ${product.name}`)
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </CButton>
+                                                    <CButton
+                                                        size="sm"
+                                                        color="danger"
+                                                        onClick={() =>
+                                                            alert(`Delete ${product.name}`)
+                                                        }
+                                                        className="ms-2"
+                                                    >
+                                                        Delete
+                                                    </CButton>
+                                                </div>
+                                            </CTableDataCell>
+                                        </CTableRow>
+                                    ))}
+                                </CTableBody>
+                            </CTable>
+                            <AppPagination
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                totalPages={totalPages}
+                                setTotalPages={setTotalPages}
+                            />
+                        </>
+                    )}
                 </CCol>
                 <CCol className="d-none d-xl-block">
                     <NewProduct />
