@@ -13,19 +13,28 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import NewProduct from '../new-product/index'
+import AppPagination from '../../components/AppPagination'
 
 const Products = () => {
     const navigate = useNavigate()
     const [products, setProducts] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
 
     useEffect(() => {
-        fetchProducts()
-    }, [])
+        fetchProducts(currentPage)
+    }, [currentPage])
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (currentPage) => {
         try {
-            const response = await axios.get('/products')
-            setProducts(response.data)
+            const response = await axios.get('/products', {
+                params: {
+                    page: currentPage,
+                },
+            })
+            setProducts(response.data.data)
+            setTotalPages(response.data.totalPages)
+            setCurrentPage(response.data.currentPage)
         } catch (error) {
             console.error('Error fetching Products:', error)
         }
@@ -82,7 +91,6 @@ const Products = () => {
                     <CTable striped bordered hover responsive>
                         <CTableHead>
                             <CTableRow>
-                                <CTableHeaderCell scope="col">#</CTableHeaderCell>
                                 <CTableHeaderCell scope="col">Name</CTableHeaderCell>
                                 <CTableHeaderCell scope="col">Code</CTableHeaderCell>
                                 <CTableHeaderCell scope="col">Barcode</CTableHeaderCell>
@@ -95,30 +103,31 @@ const Products = () => {
                             </CTableRow>
                         </CTableHead>
                         <CTableBody>
-                            {products.map((user, index) => (
-                                <CTableRow key={user.id}>
-                                    <CTableDataCell>{index + 1}</CTableDataCell>
-                                    <CTableDataCell>{user.name}</CTableDataCell>
-                                    <CTableDataCell>{user.code}</CTableDataCell>
-                                    <CTableDataCell>{user.barcode}</CTableDataCell>
-                                    <CTableDataCell>{user.cost_price}</CTableDataCell>
-                                    <CTableDataCell>{user.sale_price}</CTableDataCell>
-                                    <CTableDataCell>{user.is_active ? 'Yes' : 'No'}</CTableDataCell>
-                                    <CTableDataCell>{user.department.name}</CTableDataCell>
-                                    <CTableDataCell>{user.group.name}</CTableDataCell>
+                            {products.map((product, index) => (
+                                <CTableRow key={product.id}>
+                                    <CTableDataCell>{product.name}</CTableDataCell>
+                                    <CTableDataCell>{product.code}</CTableDataCell>
+                                    <CTableDataCell>{product.barcode}</CTableDataCell>
+                                    <CTableDataCell>{product.cost_price}</CTableDataCell>
+                                    <CTableDataCell>{product.sale_price}</CTableDataCell>
+                                    <CTableDataCell>
+                                        {product.is_active ? 'Yes' : 'No'}
+                                    </CTableDataCell>
+                                    <CTableDataCell>{product.department.name}</CTableDataCell>
+                                    <CTableDataCell>{product.group.name}</CTableDataCell>
                                     <CTableDataCell>
                                         <div className="d-flex">
                                             <CButton
                                                 size="sm"
                                                 color="primary"
-                                                onClick={() => alert(`Edit ${user.name}`)}
+                                                onClick={() => alert(`Edit ${product.name}`)}
                                             >
                                                 Edit
                                             </CButton>
                                             <CButton
                                                 size="sm"
                                                 color="danger"
-                                                onClick={() => alert(`Delete ${user.name}`)}
+                                                onClick={() => alert(`Delete ${product.name}`)}
                                                 className="ms-2"
                                             >
                                                 Delete
@@ -129,6 +138,12 @@ const Products = () => {
                             ))}
                         </CTableBody>
                     </CTable>
+                    <AppPagination
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        totalPages={totalPages}
+                        setTotalPages={setTotalPages}
+                    />
                 </CCol>
                 <CCol className="d-none d-xl-block">
                     <NewProduct />

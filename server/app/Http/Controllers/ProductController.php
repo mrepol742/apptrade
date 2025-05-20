@@ -9,16 +9,27 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
     /**
+     * @var int
+     */
+    protected $items = 100;
+    
+    /**
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getProducts(Request $request)
     {
-        $products = Product::with(['group', 'department'])
-        ->orderBy('id', 'desc')
-        ->get();
-        return response()->json($products);
+        $currentPage = (int) $request->input('page', 1);
+        $query = Product::with(['group', 'department'])->orderBy('id', 'desc');
+        $products = $query->paginate($this->items, ['*'], 'page', $currentPage);
+        $total = (int) ceil($products->total() / $this->items);
+
+        return response()->json([
+            'data' => $products->items(),
+            'totalPages' => $total,
+            'currentPage' => $products->currentPage(),
+        ]);
     }
 
     /**
