@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10000000; $i++) {
             \App\Models\Product::factory()->create([
                 'department_id' => rand(1, count($departments)),
                 'group_id' => rand(1, count($groups)),
