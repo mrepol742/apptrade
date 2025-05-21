@@ -24,10 +24,6 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/departments', [\App\Http\Controllers\ExportController::class, 'exportDepartments']);
     });
 
-    Route::group(['prefix' => 'printers'], function () {
-        Route::get('/', [\App\Http\Controllers\PrinterController::class, 'getPrinters']);
-    });
-
     // Sales lock cashier
     Route::get('/sales-lock', [\App\Http\Controllers\SalesLock::class, 'getSalesLock']);
     Route::post('/sales-lock', [\App\Http\Controllers\SalesLock::class, 'createSalesLock']);

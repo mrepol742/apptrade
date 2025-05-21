@@ -62,8 +62,6 @@ const PaymentInput = ({ data }) => {
             return toast.error('Amount is greater than max safe integer')
         axios
             .post('/sales/checkout', {
-                desktop_id: 1,
-                printer_id: 1,
                 products: products,
                 total: total,
                 total_discount: 0,

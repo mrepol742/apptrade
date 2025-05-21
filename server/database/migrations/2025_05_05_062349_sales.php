@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->integer('cashier_id');
-            $table->string('desktop_id');
-            $table->integer('printer_id');
             $table->json('products');
             $table->integer('total');
             $table->integer('total_discount')->default(0);
