@@ -30,6 +30,10 @@ class Sale extends Model
         'reference_number',
     ];
 
+    protected $casts = [
+        'products' => 'json',
+    ];
+
     /**
      * Get the printer associated with the sale.
      */

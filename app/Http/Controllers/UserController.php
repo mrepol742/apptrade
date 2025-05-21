@@ -8,16 +8,27 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     /**
+     * @var int
+     */
+    protected $items = 100;
+
+    /**
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getUsers(Request $request)
     {
-        $users = User::with('department')
-        ->orderBy('id', 'desc')
-        ->get();
-        return response()->json($users);
+        $currentPage = (int) $request->input('page', 1);
+        $query = User::with('department');
+        $users = $query->paginate($this->items, ['*'], 'page', $currentPage);
+        $total = (int) ceil($users->total() / $this->items);
+
+        return response()->json([
+            'data' => $users->items(),
+            'totalPages' => $total,
+            'currentPage' => $users->currentPage(),
+        ]);
     }
 
 

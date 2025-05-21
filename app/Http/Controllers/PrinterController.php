@@ -15,9 +15,8 @@ class PrinterController extends Controller
     {
         try {
             $printers = shell_exec('wmic printer get Name,Description,Default,Status /format:csv');
-            if ($printers === null) {
+            if ($printers === null) 
             return response()->json(['error' => 'Unable to fetch printers'], 500);
-            }
 
             $lines = explode("\n", trim($printers));
             $headers = [];
