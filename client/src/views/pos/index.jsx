@@ -59,7 +59,6 @@ const PointOfSale = () => {
             const discountedPrice = product.sale_price * (1 - product.discount / 100)
             return acc + discountedPrice * product.quantity
         }, 0)
-        .toFixed(2)
 
     const totalTaxes = products
         .filter((product) => product.id !== 'discount' && !product.deleted)
@@ -76,19 +75,16 @@ const PointOfSale = () => {
         .filter((product) => product.id === 'discount')
         .reduce((acc, product) => acc + (product.discount || 0), 0)
 
-    const total = (
-        (parseFloat(subTotal) + parseFloat(totalTaxes)) *
-        (1 - parseFloat(discount) / 100)
-    ).toFixed(2)
+    const total = (parseFloat(subTotal) + parseFloat(totalTaxes)) * (1 - parseFloat(discount) / 100)
 
     const calculateTotal = (itemPrice, itemQuantity, itemDiscount = 0) => {
         const discountedPrice = itemPrice * (1 - itemDiscount / 100)
-        return (discountedPrice * itemQuantity).toFixed(2)
+        return discountedPrice * itemQuantity
     }
 
     const calculatePrice = (itemPrice, itemDiscount = 0) => {
         const discountedPrice = itemPrice * (1 - itemDiscount / 100)
-        return discountedPrice.toFixed(2)
+        return discountedPrice
     }
 
     const handleKeyDown = (event) => {
@@ -164,12 +160,38 @@ const PointOfSale = () => {
 
     const handleSearch = (event) => {
         if (salesLock) return toast.error('Sales locked')
-        const query = event.target.value.toLowerCase()
+        const query = event.target.value
+
+        const existingProduct = products.find((p) => p.barcode && p.barcode.toLowerCase() === query)
+        if (existingProduct) {
+            setProducts((prevProducts) =>
+                prevProducts.map((p) =>
+                    p.barcode && p.barcode.toLowerCase() === query
+                        ? { ...p, quantity: p.quantity + 1, discount: 0 }
+                        : p,
+                ),
+            )
+            setIsDirty(true)
+            return
+        }
+
         axios
             .get(`/products/${query}`)
             .then((response) => {
                 if (response.data.length === 0) return toast.error('Product not found')
-                addProduct(response.data[0])
+                const foundProduct = response.data[0]
+                setProducts((prevProducts) => {
+                    const existingProduct = prevProducts.find((p) => p.id === foundProduct.id)
+                    if (existingProduct) {
+                        return prevProducts.map((p) =>
+                            p.id === foundProduct.id
+                                ? { ...p, quantity: p.quantity + 1, discount: 0 }
+                                : p,
+                        )
+                    } else {
+                        return [...prevProducts, { ...foundProduct, quantity: 1, discount: 0 }]
+                    }
+                })
                 setIsDirty(true)
             })
             .catch((error) => {
@@ -241,10 +263,7 @@ const PointOfSale = () => {
         )
 
     return (
-        <div
-            className="d-flex flex-column"
-            style={{ height: '100vh', width: '99.3%', userSelect: 'none' }}
-        >
+        <div className="d-flex flex-column" style={{ height: '100vh', width: '99.3%' }}>
             <DeleteModal
                 data={{
                     showDeleteModal,
@@ -400,7 +419,10 @@ const PointOfSale = () => {
                                                         {calculatePrice(
                                                             priceWithTax,
                                                             product.discount,
-                                                        )}
+                                                        ).toLocaleString('en-PH', {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })}
                                                     </CTableDataCell>
                                                     <CTableDataCell
                                                         className={`${product.deleted && 'text-danger'} text-end`}
@@ -410,7 +432,10 @@ const PointOfSale = () => {
                                                             priceWithTax,
                                                             product.quantity,
                                                             product.discount,
-                                                        )}
+                                                        ).toLocaleString('en-PH', {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2,
+                                                        })}
                                                     </CTableDataCell>
                                                 </CTableRow>
                                             )
@@ -422,7 +447,12 @@ const PointOfSale = () => {
                     <div className="bg-body-secondary p-3 m-3 rounded mt-auto">
                         <div className="d-flex justify-content-between">
                             <span>Subtotal:</span>
-                            <span>{subTotal}</span>
+                            <span>
+                                {subTotal.toLocaleString('en-PH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                            </span>
                         </div>
                         {discount > 0 && (
                             <div className="d-flex justify-content-between">
@@ -432,11 +462,21 @@ const PointOfSale = () => {
                         )}
                         <div className="d-flex justify-content-between  border-bottom border-secondary pb-2">
                             <span>Tax:</span>
-                            <span>{totalTaxes}</span>
+                            <span>
+                                {totalTaxes.toLocaleString('en-PH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                            </span>
                         </div>
                         <div className="d-flex justify-content-between pt-2">
                             <strong>Total:</strong>
-                            <strong>{total}</strong>
+                            <strong>
+                                {total.toLocaleString('en-PH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                            </strong>
                         </div>
                     </div>
                 </CCol>

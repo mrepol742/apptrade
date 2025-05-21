@@ -1,6 +1,23 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAdd, faCartPlus, faClose } from '@fortawesome/free-solid-svg-icons'
+import {
+    CDropdown,
+    CDropdownItem,
+    CDropdownMenu,
+    CDropdownToggle,
+    useColorModes,
+} from '@coreui/react'
+import { faAdd, faCartPlus, faClose, faExpand, faMinimize } from '@fortawesome/free-solid-svg-icons'
+import CIcon from '@coreui/icons-react'
+import {
+    cilBell,
+    cilContrast,
+    cilEnvelopeOpen,
+    cilList,
+    cilMenu,
+    cilMoon,
+    cilSun,
+} from '@coreui/icons'
 import PropTypes from 'prop-types'
 
 const Controls = ({ data }) => {
@@ -19,11 +36,105 @@ const Controls = ({ data }) => {
         paymentMethod,
         setPaymentMethod,
     } = data
+    const [isFullScreen, setIsFullScreen] = useState(false)
+    const [currentTime, setCurrentTime] = useState(new Date())
+    const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date())
+        }, 1000)
+        return () => clearInterval(timer)
+    }, [])
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'F11') {
+                event.preventDefault()
+                handleFullScreen()
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isFullScreen])
+
+    const handleFullScreen = () => {
+        if (!isFullScreen) {
+            if (document.documentElement.requestFullscreen)
+                document.documentElement.requestFullscreen()
+            setIsFullScreen(true)
+            return
+        }
+        if (document.exitFullscreen) document.exitFullscreen()
+        setIsFullScreen(false)
+    }
 
     return (
         <>
             <div className="flex-grow-1 text-uppercase" data-aos="fade-in">
-                <div className=" d-flex justify-content-between align-items-center mt-2 text-center">
+                <div className="d-flex justify-content-between align-items-center mt-2 p-2 text-center">
+                    {currentTime.toLocaleString('en-US', {
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true,
+                    })}
+                    <div>
+                        <CDropdown>
+                            <CDropdownToggle caret={false}>
+                                {colorMode === 'dark' ? (
+                                    <CIcon icon={cilMoon} size="lg" />
+                                ) : colorMode === 'auto' ? (
+                                    <CIcon icon={cilContrast} size="lg" />
+                                ) : (
+                                    <CIcon icon={cilSun} size="lg" />
+                                )}
+                            </CDropdownToggle>
+                            <CDropdownMenu>
+                                <CDropdownItem
+                                    active={colorMode === 'light'}
+                                    className="d-flex align-items-center"
+                                    as="button"
+                                    type="button"
+                                    onClick={() => setColorMode('light')}
+                                >
+                                    <CIcon className="me-2" icon={cilSun} size="lg" /> Light
+                                </CDropdownItem>
+                                <CDropdownItem
+                                    active={colorMode === 'dark'}
+                                    className="d-flex align-items-center"
+                                    as="button"
+                                    type="button"
+                                    onClick={() => setColorMode('dark')}
+                                >
+                                    <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
+                                </CDropdownItem>
+                                <CDropdownItem
+                                    active={colorMode === 'auto'}
+                                    className="d-flex align-items-center"
+                                    as="button"
+                                    type="button"
+                                    onClick={() => setColorMode('auto')}
+                                >
+                                    <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
+                                </CDropdownItem>
+                            </CDropdownMenu>
+                        </CDropdown>
+                        <FontAwesomeIcon
+                            className="ms-2"
+                            icon={isFullScreen ? faMinimize : faExpand}
+                            onClick={handleFullScreen}
+                            style={{ cursor: 'pointer' }}
+                            title={isFullScreen ? 'Exit Full Screen' : 'Full Screen'}
+                        />
+                    </div>
+                </div>
+                <div className=" d-flex justify-content-between align-items-center text-center">
                     <div
                         className={`rounded py-5 m-1 d-flex flex-column align-items-center border border-2 ${selectedProduct.length > 0 ? 'bg-danger border-danger' : 'border-secondary'}`}
                         onClick={(e) => handleDelete('del')}

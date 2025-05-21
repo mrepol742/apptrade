@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDeleteLeft } from '@fortawesome/free-solid-svg-icons'
+import { reference } from '@popperjs/core'
 
 const PaymentInput = ({ data }) => {
     const {
@@ -25,18 +26,11 @@ const PaymentInput = ({ data }) => {
         paymentMethod,
         setPaymentMethod,
     } = data
-    const [amount, setAmount] = useState(
-        products.amount || '',
-    )
+    const [amount, setAmount] = useState(products.amount || '')
 
     const handleClose = () => {
         setAmount('')
         setShowPaymentModal(false)
-    }
-
-    const handlePayment = () => {
-        if (amount < 0) return toast.error('Amount cannot be negative')
-        
     }
 
     const handleKeyDown = (event) => {
@@ -46,10 +40,51 @@ const PaymentInput = ({ data }) => {
     const handleChange = () => {
         const amount1 = parseFloat(amount)
         const total1 = parseFloat(total)
-        const value = amount1 >= total1
-            ? <>{(amount1 - total1).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>
-            : '0.00'
-            return value
+        const value =
+            amount1 >= total1 ? (
+                <>
+                    {(amount1 - total1).toLocaleString('en-PH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}
+                </>
+            ) : (
+                '0.00'
+            )
+        return value
+    }
+
+    const handleCheckout = async () => {
+        if (products.length === 0) return toast.error('Select a product')
+        if (amount < 0) return toast.error('Amount cannot be negative')
+        if (parseInt(amount) < parseInt(total)) return toast.error('Amount is less than total')
+        if (parseInt(amount) > Number.MAX_SAFE_INTEGER)
+            return toast.error('Amount is greater than max safe integer')
+        axios
+            .post('/sales/checkout', {
+                desktop_id: 1,
+                printer_id: 1,
+                products: products,
+                total: total,
+                total_discount: 0,
+                total_taxes: 0,
+                total_payment: amount,
+                total_change: amount - total,
+                mode_of_payment: paymentMethod,
+                reference_number: '12',
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    setProducts([])
+                    setSelectedProduct([])
+                    setShowPaymentModal(false)
+                    toast.success('Checkout successful')
+                }
+            })
+            .catch((err) => {
+                console.error(err)
+                toast.error('Checkout failed')
+            })
     }
 
     useEffect(() => {
@@ -80,8 +115,8 @@ const PaymentInput = ({ data }) => {
                             Cash
                         </div>
                         <div
-                         className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 flex-fill ${paymentMethod === 'credit' ? 'bg-primary border-primary' : 'border-secondary'}`}
-                         onClick={() => setPaymentMethod('credit')}
+                            className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 flex-fill ${paymentMethod === 'credit' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                            onClick={() => setPaymentMethod('credit')}
                             style={{ cursor: 'pointer' }}
                         >
                             Credit
@@ -94,8 +129,8 @@ const PaymentInput = ({ data }) => {
                             Debit
                         </div>
                         <div
-                           className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 flex-fill ${paymentMethod === 'check' ? 'bg-primary border-primary' : 'border-secondary'}`}
-                           onClick={() => setPaymentMethod('check')}
+                            className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 flex-fill ${paymentMethod === 'check' ? 'bg-primary border-primary' : 'border-secondary'}`}
+                            onClick={() => setPaymentMethod('check')}
                             style={{ cursor: 'pointer' }}
                         >
                             Check
@@ -103,16 +138,30 @@ const PaymentInput = ({ data }) => {
                     </div>
                     <div className="d-flex justify-content-between">
                         <p>Total:</p>
-                        <div className="text-wrap text-break overflow-y">{total}</div>
+                        <div className="text-wrap text-break overflow-y">
+                            {total.toLocaleString('en-PH', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
+                        </div>
                     </div>
                     <div className="d-flex justify-content-between">
                         <p className="my-auto">Paid:</p>
                         <CFormInput
                             type="number"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => {
+                                let val = e.target.value
+                                if (val.length > 1 && val.startsWith('0')) {
+                                    val = val.replace(/^0+/, '')
+                                }
+                                if (val === '' || Number(val) <= Number.MAX_SAFE_INTEGER) {
+                                    setAmount(val)
+                                }
+                            }}
                             placeholder="Enter amount"
                             min={0}
+                            max={Number.MAX_SAFE_INTEGER}
                             className="w-50"
                         />
                     </div>
@@ -122,7 +171,15 @@ const PaymentInput = ({ data }) => {
                         <div className="text-wrap text-break overflow-y">{handleChange()}</div>
                     </div>
                     <div className="d-flex justify-content-end mt-3 gap-2">
-                        <CButton color="primary" onClick={handlePayment} disabled={!amount || parseInt(amount) < parseInt(total)}>
+                        <CButton
+                            color="primary"
+                            onClick={handleCheckout}
+                            disabled={
+                                !amount ||
+                                parseInt(amount) < parseInt(total) ||
+                                parseInt(amount) > Number.MAX_SAFE_INTEGER
+                            }
+                        >
                             Print Receipt
                         </CButton>
                     </div>

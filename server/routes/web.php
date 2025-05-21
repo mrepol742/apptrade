@@ -36,4 +36,6 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/groups', [\App\Http\Controllers\GroupController::class, 'getGroups']);
     Route::post('/products', [\App\Http\Controllers\ProductController::class, 'createProduct']);
     Route::get('/products/{id?}', [\App\Http\Controllers\ProductController::class, 'getProduct']);
+    Route::post('/sales/checkout', [\App\Http\Controllers\SaleController::class, 'checkout']);
+    Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'getSales']);
 });

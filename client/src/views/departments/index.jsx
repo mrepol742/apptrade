@@ -12,18 +12,27 @@ import {
     CCol,
 } from '@coreui/react'
 import NewDepartment from '../new-department'
+import AppPagination from '../../components/AppPagination'
 
 const Departments = () => {
     const [departments, setDepartments] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
 
     useEffect(() => {
-        fetchDepartments()
-    }, [])
+        fetchDepartments(currentPage)
+    }, [currentPage])
 
-    const fetchDepartments = async () => {
+    const fetchDepartments = async (currentPage) => {
         try {
-            const response = await axios.get('/departments')
-            setDepartments(response.data)
+            const response = await axios.get('/departments', {
+                params: {
+                    page: currentPage,
+                },
+            })
+            setDepartments(response.data.data)
+            setTotalPages(response.data.totalPages)
+            setCurrentPage(response.data.currentPage)
         } catch (error) {
             console.error('Error fetching Users:', error)
         }
@@ -101,6 +110,12 @@ const Departments = () => {
                                     ))}
                                 </CTableBody>
                             </CTable>
+                            <AppPagination
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                totalPages={totalPages}
+                                setTotalPages={setTotalPages}
+                            />
                         </>
                     )}
                 </CCol>
