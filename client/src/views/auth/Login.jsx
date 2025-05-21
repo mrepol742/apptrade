@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
     CButton,
@@ -18,12 +18,11 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import { toast } from 'react-toastify'
 
 const Login = () => {
-    const [formData, setFormData] = React.useState({
+    const [formData, setFormData] = useState({
         username: '',
         password: '',
     })
-    const [error, setError] = React.useState(null)
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -35,16 +34,17 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        const response = await axios.post('/auth/login', formData)
-        if (response.status === 200) {
-            toast.success('Login successful')
-            cookies.set('session_id', response.data.session_token, {
-                expires: 1,
+        axios
+            .post('/auth/login', formData)
+            .then((response) => {
+                if (response.data.error) return toast.error(response.data.error)
+                toast.success('Login successful')
+                cookies.set('session_id', response.data.session_token, {
+                    expires: 1,
+                })
+                window.location.href = '/'
             })
-            window.location.href = '/'
-        } else {
-            toast.error('Login failed')
-        }
+            .catch((error) => toast.error('Invalid username or password'))
     }
 
     return (

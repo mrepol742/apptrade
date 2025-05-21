@@ -1,6 +1,7 @@
 import axios from 'axios'
 import cookies from 'js-cookie'
 
+const excludedPaths = ['/login', '/register']
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8000/api',
     timeout: 30000,
@@ -29,7 +30,7 @@ axiosInstance.interceptors.response.use(
         return response
     },
     (error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 && !excludedPaths.includes(window.location.pathname)) {
             cookies.remove('session_id')
             window.location.href = '/login'
         }
