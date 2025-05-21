@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -16,10 +17,15 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'username' => 'required|string|exists:users,username',
             'password' => 'required|string|min:6',
         ]);
+
+        if ($validator->fails())
+            return response()->json([
+                'error' => $validator->errors()->first()
+            ], 200);
 
         if (Auth::attempt($request->only('username', 'password'))) {
             $request->session()->regenerate();
@@ -44,8 +50,6 @@ class AuthController extends Controller
     {
         $sessionId = $request->input('session_id');
 
-        info(Session::getId());
-        info($sessionId);
         if (Session::getId() === $sessionId && Auth::check()) {
             return response()->json([
                 'message' => 'Session is active',
