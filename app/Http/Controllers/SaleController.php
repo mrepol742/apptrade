@@ -27,8 +27,6 @@ class SaleController extends Controller
     {
         Sale::create([
             'cashier_id' => Auth::user()->id,
-            'desktop_id' => $request->input('desktop_id'),
-            'printer_id' => $request->input('printer_id'),
             'products' => $request->input('products'),
             'total' => $request->input('total'),
             'total_discount' => $request->input('total_discount'),
@@ -43,8 +41,6 @@ class SaleController extends Controller
             'message' => 'Checkout successful',
             'data' => [
                 'cashier_id' => Auth::user()->id,
-                'desktop_id' => $request->input('desktop_id'),
-                'printer_id' => $request->input('printer_id'),
                 'products' => $request->input('products'),
                 'total' => $request->input('total'),
                 'total_discount' => $request->input('total_discount'),

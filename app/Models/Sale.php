@@ -18,8 +18,6 @@ class Sale extends Model
      */
     protected $fillable = [
         'cashier_id',
-        'desktop_id',
-        'printer_id',
         'products',
         'total',
         'total_discount',
@@ -33,14 +31,6 @@ class Sale extends Model
     protected $casts = [
         'products' => 'json',
     ];
-
-    /**
-     * Get the printer associated with the sale.
-     */
-    public function printer()
-    {
-        return $this->belongsTo(Printer::class);
-    }
     
     /**
      * Get the cashier associated with the sale.
