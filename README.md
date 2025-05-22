@@ -6,6 +6,9 @@
 ## Pre-requisites
 
 - Node.js v23.^
+- PHP v8.2^
+- Composer
+- XAMPP (preferred) / Mysql Server
 
 ---
 
@@ -24,6 +27,34 @@
   ```
 
 ---
+
+### **1.1. Setup and Initialization Printer Server**
+
+- **Clone Printer Server Repository**
+
+  ```sh
+  git clone https://github.com/mrepol742/printer-server
+  ```
+
+- **Setup Environments**  
+
+  ```sh
+  cd printer-server && cp .env.example .env
+  ```
+
+  Update the following variables in your `.env` file:
+
+  - **`STORE_NAME`**: The name of your store.
+  - **`PRINTER_NAME`**: The exact name of the printer to use.
+
+  > **Note:**  
+  > Ensure printer sharing is enabled for the selected printer so the application can access it.
+
+- **Start Application**  
+
+  ```sh
+  composer run start
+  ```
 
 ### **2. Application Development**
 
