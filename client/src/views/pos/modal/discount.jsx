@@ -64,7 +64,7 @@ const DiscountInput = ({ data }) => {
     }
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') handleDiscountUpdate()
+        if (event.key === 'Enter' && showDiscountModal) handleDiscountUpdate()
     }
 
     useEffect(() => {

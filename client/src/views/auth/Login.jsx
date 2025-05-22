@@ -132,7 +132,7 @@ const Login = () => {
         const update = () => {
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight
-            const MAX_DISTANCE = (window.innerWidth + window.innerHeight) / 20
+            const MAX_DISTANCE = (window.innerWidth + window.innerHeight) / 40
 
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update()
@@ -140,7 +140,7 @@ const Login = () => {
                 for (let j = i; j < particles.length; j++) {
                     const distance = particles[i].position.distance(particles[j].position)
                     if (distance < MAX_DISTANCE) {
-                        ctx.strokeStyle = `rgba(255, 95, 158, ${1 - distance / MAX_DISTANCE})`
+                        ctx.strokeStyle = `rgba(66, 133, 244, ${1 - distance / MAX_DISTANCE})`
                         ctx.beginPath()
                         ctx.moveTo(...particles[i].position)
                         ctx.lineTo(...particles[j].position)
@@ -148,7 +148,7 @@ const Login = () => {
                     }
                 }
 
-                ctx.fillStyle = 'rgba(255, 95, 158, 0.5)'
+                ctx.fillStyle = 'rgba(66, 133, 244, 0.5)'
                 ctx.beginPath()
 
                 ctx.arc(...particles[i].position, particles[i].radius, 0, 2 * Math.PI)

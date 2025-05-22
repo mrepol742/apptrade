@@ -309,7 +309,7 @@ const PointOfSale = () => {
                 }}
             />
             <CRow className="flex-grow-1 overflow-hidden">
-                <CCol className="d-flex flex-column">
+                <CCol className="d-flex flex-column h-100">
                     <CFormInput
                         className="rounded-0 py-3 border-0 border-bottom"
                         type="search"
@@ -330,7 +330,7 @@ const PointOfSale = () => {
                             }
                         }}
                     />
-                    <div className="flex-grow-1 overflow-auto">
+                    <div className="flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
                         <CTable hover responsive>
                             <CTableHead>
                                 <CTableRow>
@@ -483,7 +483,7 @@ const PointOfSale = () => {
                 <CCol
                     lg={5}
                     xl={3}
-                    className="d-flex flex-column border-start border-2 border-secondary"
+                    className="d-flex flex-column border-start border-2 border-secondary h-100"
                 >
                     {!showMenu ? (
                         <Controls

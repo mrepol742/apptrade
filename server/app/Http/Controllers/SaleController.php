@@ -25,7 +25,7 @@ class SaleController extends Controller
 
     public function checkout(Request $request)
     {
-        Sale::create([
+        $data =  [
             'cashier_id' => Auth::user()->id,
             'products' => $request->input('products'),
             'total' => $request->input('total'),
@@ -35,21 +35,11 @@ class SaleController extends Controller
             'total_change' => $request->input('total_change'),
             'mode_of_payment' => $request->input('mode_of_payment'),
             'reference_number' => $request->input('reference_number'),
-        ]);
-
+        ];
+        Sale::create($data);
         return response()->json([
             'message' => 'Checkout successful',
-            'data' => [
-                'cashier_id' => Auth::user()->id,
-                'products' => $request->input('products'),
-                'total' => $request->input('total'),
-                'total_discount' => $request->input('total_discount'),
-                'total_taxes' => $request->input('total_taxes'),
-                'total_payment' => $request->input('total_payment'),
-                'total_change' => $request->input('total_change'),
-                'mode_of_payment' => $request->input('mode_of_payment'),
-                'reference_number' => $request->input('reference_number'),
-            ],
+            'data' => $data
         ]);
     }
 }

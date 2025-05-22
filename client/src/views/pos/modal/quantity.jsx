@@ -41,7 +41,17 @@ const QuantityInput = ({ data }) => {
         setShowQuantityModal(false)
     }
 
-    useEffect(() => {}, [])
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter' && showQuantityModal) handleQuantityUpdate()
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [])
 
     return (
         <>
