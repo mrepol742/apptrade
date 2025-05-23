@@ -47,7 +47,8 @@ const NewProduct = () => {
         axios
             .post('/users', user)
             .then((response) => {
-                alert('User added successfully')
+                if (response.data.error) return toast.error(response.data.error)
+                toast.success('User created successfully')
                 setUser({
                     name: '',
                     email: '',

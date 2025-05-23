@@ -13,6 +13,7 @@ import {
 } from '@coreui/react'
 import NewDepartment from '../new-department'
 import AppPagination from '../../components/AppPagination'
+import { toast } from 'react-toastify'
 
 const Departments = () => {
     const [departments, setDepartments] = useState([])
@@ -30,6 +31,7 @@ const Departments = () => {
                     page: currentPage,
                 },
             })
+            if (response.data.error) return toast.error(response.data.error)
             setDepartments(response.data.data)
             setTotalPages(response.data.totalPages)
             setCurrentPage(response.data.currentPage)

@@ -145,7 +145,7 @@ const Controls = ({ data }) => {
                             className="mb-2"
                             style={{ width: '30px', height: '50px' }}
                         />
-                        Delete
+                        Cancel
                     </div>
                     <div
                         className="rounded py-5 m-1 d-flex flex-column align-items-center border border-2 border-secondary"

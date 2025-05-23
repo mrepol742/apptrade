@@ -14,6 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import NewProduct from '../new-product/index'
 import AppPagination from '../../components/AppPagination'
+import { toast } from 'react-toastify'
 
 const Products = () => {
     const navigate = useNavigate()
@@ -32,6 +33,7 @@ const Products = () => {
                     page: currentPage,
                 },
             })
+            if (response.data.error) return toast.error(response.data.error)
             setProducts(response.data.data)
             setTotalPages(response.data.totalPages)
             setCurrentPage(response.data.currentPage)

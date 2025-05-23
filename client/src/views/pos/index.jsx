@@ -14,14 +14,17 @@ import {
     CFormInput,
     CTableDataCell,
     CSpinner,
+    CInputGroup,
+    CInputGroupText,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownLong } from '@fortawesome/free-solid-svg-icons'
+import { faDownLong, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import DeleteModal from './modal/delete'
 import QuantityModal from './modal/quantity'
 import DiscountModal from './modal/discount'
 import PaymentModal from './modal/payment'
+import SearchModal from './modal/search'
 import Controls from './sidebar/controls'
 import Menu from './sidebar/menu'
 
@@ -34,6 +37,7 @@ const PointOfSale = () => {
     const [showQuantityModal, setShowQuantityModal] = useState(false)
     const [showDiscountModal, setShowDiscountModal] = useState(false)
     const [showNewSaleModal, setShowNewSaleModal] = useState(false)
+    const [showSearchModal, setShowSearchModal] = useState(false)
     const [showPaymentModal, setShowPaymentModal] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState('cash')
     const [showMenu, setShowMenu] = useState(false)
@@ -107,6 +111,7 @@ const PointOfSale = () => {
         axios
             .get(`/sales-lock`)
             .then((response) => {
+                if (response.data.error) return toast.error(response.data.error)
                 if (response.data.length > 0) {
                     setSalesLock(true)
                     setProducts(JSON.parse(response.data))
@@ -127,6 +132,7 @@ const PointOfSale = () => {
                 mode: !salesLock,
             })
             .then((response) => {
+                if (response.data.error) return toast.error(response.data.error)
                 toast.success(
                     salesLock ? 'Sales unlocked successfully' : 'Sales locked successfully',
                 )
@@ -161,6 +167,10 @@ const PointOfSale = () => {
     const handleSearch = (event) => {
         if (salesLock) return toast.error('Sales locked')
         const query = event.target.value
+        if (query.includes(' ')) {
+            setSearchQuery(query)
+            return setShowSearchModal(true)
+        }
 
         const existingProduct = products.find((p) => p.barcode && p.barcode.toLowerCase() === query)
         if (existingProduct) {
@@ -178,8 +188,9 @@ const PointOfSale = () => {
         axios
             .get(`/products/${query}`)
             .then((response) => {
-                if (response.data.length === 0) return toast.error('Product not found')
-                const foundProduct = response.data[0]
+                if (response.data.error) return toast.error(response.data.error)
+                if (!response.data.id) return toast.error('Product not found')
+                const foundProduct = response.data
                 setProducts((prevProducts) => {
                     const existingProduct = prevProducts.find((p) => p.id === foundProduct.id)
                     if (existingProduct) {
@@ -308,6 +319,15 @@ const PointOfSale = () => {
                     setPaymentMethod,
                 }}
             />
+            <SearchModal
+                data={{
+                    showSearchModal,
+                    setShowSearchModal,
+                    products,
+                    setProducts,
+                    searchQuery,
+                }}
+            />
             <CRow className="flex-grow-1 overflow-hidden">
                 <CCol className="d-flex flex-column h-100">
                     <CFormInput
@@ -325,8 +345,10 @@ const PointOfSale = () => {
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                                 handleSearch(event)
-                                event.target.value = ''
-                                setSearchQuery('')
+                                if (!event.target.value.includes(' ')) {
+                                    event.target.value = ''
+                                    setSearchQuery('')
+                                }
                             }
                         }}
                     />

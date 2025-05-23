@@ -72,12 +72,23 @@ const PaymentInput = ({ data }) => {
                 reference_number: '12',
             })
             .then((res) => {
+                if (res.data.error) return toast.error(res.data.error)
                 if (res.status === 200) {
                     const socket = new WebSocket('ws://localhost:8080')
 
                     socket.onopen = () => {
                         console.log('Connected to print server')
-                        socket.send(JSON.stringify(res.data.data))
+                        socket.send(
+                            JSON.stringify({
+                                name: 'Apptrade Inc.',
+                                address: '1234 Main St, City, State, Zip',
+                                phone: '123-456-7890',
+                                email: 'example@gmail.com',
+                                website: 'www.example.com',
+                                date: new Date().toLocaleString(),
+                                receipt: res.data.receipt,
+                            }),
+                        )
                     }
 
                     socket.onmessage = (event) => {

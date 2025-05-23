@@ -30,6 +30,7 @@ const Users = () => {
                     page: currentPage,
                 },
             })
+            if (response.data.error) return toast.error(response.data.error)
             setUsers(response.data.data)
             setTotalPages(response.data.totalPages)
             setCurrentPage(response.data.currentPage)

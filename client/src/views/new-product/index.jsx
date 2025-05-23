@@ -11,6 +11,7 @@ import {
     CFormSelect,
 } from '@coreui/react'
 import { Helmet } from 'react-helmet'
+import { toast } from 'react-toastify'
 
 const NewProduct = () => {
     const [department, setDepartment] = useState([])
@@ -62,7 +63,8 @@ const NewProduct = () => {
         axios
             .post('/products', product)
             .then((response) => {
-                alert('Product added successfully')
+                if (response.data.error) return toast.error(response.data.error)
+                toast.success('Product created successfully')
                 setProduct({
                     name: '',
                     code: '',

@@ -11,6 +11,7 @@ import {
     CFormSelect,
 } from '@coreui/react'
 import { Helmet } from 'react-helmet'
+import { toast } from 'react-toastify'
 
 const NewDepartment = () => {
     const [department, setDepartment] = useState({
@@ -30,7 +31,8 @@ const NewDepartment = () => {
         axios
             .post('/departments', department)
             .then((response) => {
-                alert('Department added successfully')
+                if (response.data.error) return toast.error(response.data.error)
+                toast.success('Department created successfully')
                 setDepartment({
                     name: '',
                 })
