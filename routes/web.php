@@ -10,7 +10,7 @@ Route::group(['prefix' => 'api'], function () {
         Route::post('/logout', [\App\Http\Auth\AuthController::class, 'logout']);
         Route::post('/verify-session', [\App\Http\Auth\AuthController::class, 'verifySession']);
     });
-    
+
     // Admin
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'getUsers']);
     Route::post('/users', [\App\Http\Controllers\UserController::class, 'createUser']);
@@ -32,6 +32,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('/groups', [\App\Http\Controllers\GroupController::class, 'getGroups']);
     Route::post('/products', [\App\Http\Controllers\ProductController::class, 'createProduct']);
     Route::get('/products/{id?}', [\App\Http\Controllers\ProductController::class, 'getProduct']);
+    Route::post('/products/search', [\App\Http\Controllers\ProductController::class, 'search']);
     Route::post('/sales/checkout', [\App\Http\Controllers\SaleController::class, 'checkout']);
     Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'getSales']);
 });

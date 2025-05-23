@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Auth;
 
 use Illuminate\Http\Request;

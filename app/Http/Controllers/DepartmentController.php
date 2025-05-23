@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DepartmentController extends Controller
 {
@@ -19,13 +20,15 @@ class DepartmentController extends Controller
      */
     public function getDepartments(Request $request)
     {
-        $currentPage = $request->input('page');
+        try {
+            $currentPage = $request->input('page');
 
-        if (is_null($currentPage)) {
-            $departments = Department::orderBy('id', 'desc')->get();
+            if (is_null($currentPage)) {
+                $departments = Department::orderBy('id', 'desc')->get();
 
-            return response()->json(
-                $departments);
+                return response()->json(
+                    $departments
+                );
             }
 
             $currentPage = (int) $currentPage;
@@ -34,10 +37,14 @@ class DepartmentController extends Controller
             $total = (int) ceil($departments->total() / $this->items);
 
             return response()->json([
-            'data' => $departments->items(),
-            'totalPages' => $total,
-            'currentPage' => $departments->currentPage(),
+                'data' => $departments->items(),
+                'totalPages' => $total,
+                'currentPage' => $departments->currentPage(),
             ]);
+        } catch (\Exception $e) {
+            Log::error('Error handling request: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
     }
 
     /**
@@ -47,12 +54,17 @@ class DepartmentController extends Controller
      */
     public function createDepartment(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255|unique:departments,name',
+            ]);
 
-        $department = Department::create($request->all());
+            $department = Department::create($request->all());
 
-        return response()->json($department, 201);
+            return response()->json($department, 201);
+        } catch (\Exception $e) {
+            Log::error('Error handling request: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
     }
 }
