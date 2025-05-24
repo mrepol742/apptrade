@@ -91,18 +91,31 @@ const PointOfSale = () => {
         return discountedPrice
     }
 
+    const closeAllModals = () => {
+        setShowDeleteModal(false)
+        setShowQuantityModal(false)
+        setShowDiscountModal(false)
+        setShowNewSaleModal(false)
+        setShowSearchModal(false)
+        setShowPaymentModal(false)
+    }
+
     const handleKeyDown = (event) => {
         if (event.key === 'F2') {
             event.preventDefault()
+            closeAllModals()
             handleDiscount()
         } else if (event.key === 'F4') {
             event.preventDefault()
+            closeAllModals()
             handleQuantity()
         } else if (event.key === 'F10') {
             event.preventDefault()
+            closeAllModals()
             handlePayment()
         } else if (event.key === 'Delete') {
             event.preventDefault()
+            closeAllModals()
             handleDelete()
         }
     }
@@ -224,6 +237,7 @@ const PointOfSale = () => {
 
     const handleDiscount = () => {
         if (salesLock) return toast.error('Sales locked')
+        if (products.length === 0) return toast.error('No products in cart')
         setShowDiscountModal(true)
     }
 
@@ -296,7 +310,7 @@ const PointOfSale = () => {
                 <span style={{ fontSize: '4vw', fontWeight: 700, opacity: 0.08 }}>
                     Apptrade Inc.
                 </span>
-                <span className="d-block" style={{ opacity: 0.3 }}>
+                <span className="d-block" style={{ opacity: 0.2 }}>
                     https://apptradeinc.com
                 </span>
             </div>
@@ -453,16 +467,6 @@ const PointOfSale = () => {
                                                         className={`${product.deleted && 'text-danger'} text-end`}
                                                         style={{ width: 100, maxWidth: 120 }}
                                                     >
-                                                        {product.discount > 0 && (
-                                                            <FontAwesomeIcon
-                                                                icon={faDownLong}
-                                                                className={`${product.deleted ? 'text-danger' : 'text-success'} me-1`}
-                                                                style={{
-                                                                    width: '12px',
-                                                                    height: '12px',
-                                                                }}
-                                                            />
-                                                        )}
                                                         {calculatePrice(
                                                             priceWithTax,
                                                             product.discount,
@@ -470,6 +474,20 @@ const PointOfSale = () => {
                                                             minimumFractionDigits: 2,
                                                             maximumFractionDigits: 2,
                                                         })}
+                                                        {product.discount > 0 && (
+                                                            <div
+                                                                className="d-block text-muted text-decoration-line-through"
+                                                                style={{ fontSize: '0.7em' }}
+                                                            >
+                                                                {calculatePrice(
+                                                                    priceWithTax,
+                                                                    0,
+                                                                ).toLocaleString('en-PH', {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2,
+                                                                })}
+                                                            </div>
+                                                        )}
                                                     </CTableDataCell>
                                                     <CTableDataCell
                                                         className={`${product.deleted && 'text-danger'} text-end`}
