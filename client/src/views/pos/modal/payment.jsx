@@ -78,25 +78,17 @@ const PaymentInput = ({ data }) => {
 
                     socket.onopen = () => {
                         console.log('Connected to print server')
-                        socket.send(
-                            JSON.stringify({
-                                name: 'Apptrade Inc.',
-                                address: '1234 Main St, City, State, Zip',
-                                phone: '123-456-7890',
-                                email: 'example@gmail.com',
-                                website: 'www.example.com',
-                                date: new Date().toLocaleString(),
-                                receipt: res.data.receipt,
-                            }),
-                        )
+                        socket.send(JSON.stringify(res.data))
                     }
 
                     socket.onmessage = (event) => {
                         console.log('Server says:', event.data)
+                        socket.close()
                     }
 
                     socket.onerror = (error) => {
-                        console.error('WebSocket Error:', error)
+                        toast.error('Error connecting to print server')
+                        console.error('WebSocket error:', error)
                     }
 
                     setProducts([])

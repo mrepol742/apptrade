@@ -6,6 +6,7 @@ use App\Models\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Laravel\Pail\Contracts\Printer;
 
 class SaleController extends Controller
 {
@@ -33,7 +34,7 @@ class SaleController extends Controller
     {
         try {
             $data =  [
-                'cashier_id' => Auth::user()->id,
+                'cashier' => Auth::user(),
                 'products' => $request->input('products'),
                 'total' => $request->input('total'),
                 'total_discount' => $request->input('total_discount'),
@@ -46,18 +47,15 @@ class SaleController extends Controller
             Sale::create($data);
             return response()->json([
                 'message' => 'Checkout successful',
-                'data' => $data,
-                'receipt' => "
-Cashier: {$data['cashier_id']}
-Products: " . json_encode($data['products']) . "
-Total: {$data['total']}
-Total Discount: {$data['total_discount']}
-Total Taxes: {$data['total_taxes']}
-Total Payment: {$data['total_payment']}
-Total Change: {$data['total_change']}
-Mode of Payment: {$data['mode_of_payment']}
-Reference Number: {$data['reference_number']}
-            ",
+                'business' => [
+                    'name' => config('business.name'),
+                    'address' => config('business.address'),
+                    'phone' => config('business.phone'),
+                    'email' => config('business.email'),
+                    'website' => config('business.website'),
+                    'tax_id' => config('business.tax_id'),
+                ],
+                'receipt' => PrinterController::printReceipt($data),
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling request: ' . $e->getMessage());

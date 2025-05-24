@@ -35,4 +35,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('/products/search', [\App\Http\Controllers\ProductController::class, 'search']);
     Route::post('/sales/checkout', [\App\Http\Controllers\SaleController::class, 'checkout']);
     Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'getSales']);
+
+    Route::post('/printer', [\App\Http\Controllers\PrinterController::class, 'setPrinter']);
+    Route::post('/printer/status', [\App\Http\Controllers\PrinterController::class, 'setStatus']);
 });
