@@ -68,7 +68,7 @@ const Menu = ({ data }) => {
             >
                 <div className="text-center py-3" onClick={() => setShowMenu(false)}>
                     <FontAwesomeIcon icon={faChevronLeft} className="my-auto me-3" />
-                    <span className="text-uppercase">Menu</span>
+                    <span className="text-uppercase">Back</span>
                 </div>
             </div>
             <CNavbarNav>

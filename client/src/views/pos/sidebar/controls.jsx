@@ -7,7 +7,18 @@ import {
     CDropdownToggle,
     useColorModes,
 } from '@coreui/react'
-import { faAdd, faCartPlus, faClose, faExpand, faMinimize } from '@fortawesome/free-solid-svg-icons'
+import {
+    faAdd,
+    faCartPlus,
+    faClose,
+    faExpand,
+    faMinimize,
+    faClock,
+    faPercent,
+    faLock,
+    faLockOpen,
+    faBars,
+} from '@fortawesome/free-solid-svg-icons'
 import CIcon from '@coreui/icons-react'
 import {
     cilBell,
@@ -75,15 +86,18 @@ const Controls = ({ data }) => {
         <>
             <div className="flex-grow-1 text-uppercase" data-aos="fade-in">
                 <div className="d-flex justify-content-between align-items-center mt-2 p-2 text-center">
-                    {currentTime.toLocaleString('en-US', {
-                        month: 'long',
-                        day: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: true,
-                    })}
+                    <div>
+                        <FontAwesomeIcon icon={faClock} className="me-1" />
+                        {currentTime.toLocaleString('en-PH', {
+                            month: 'long',
+                            day: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true,
+                        })}
+                    </div>
                     <div>
                         <CDropdown>
                             <CDropdownToggle caret={false}>
@@ -222,29 +236,38 @@ const Controls = ({ data }) => {
                         onClick={handleDiscount}
                         style={{ flex: 1 }}
                     >
+                        <FontAwesomeIcon
+                            icon={faPercent}
+                            style={{ width: '30px', height: '50px' }}
+                        />{' '}
                         Discount
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${salesLock ? 'bg-danger border-danger' : 'border-secondary'}`}
+                        onClick={handleSalesLock}
                         style={{ flex: 1 }}
                     >
-                        Refund
+                        <FontAwesomeIcon
+                            icon={salesLock ? faLockOpen : faLock}
+                            style={{ width: '30px', height: '50px' }}
+                        />{' '}
+                        Lock
                     </div>
                     <div
                         className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-success bg-success"
                         onClick={handlePayment}
                         style={{ flex: 1 }}
                     >
+                        <span className="fs-2">F10</span>
                         Payment
                     </div>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3 text-center">
                     <div
-                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${salesLock ? 'bg-danger border-danger' : 'border-secondary'}`}
-                        onClick={handleSalesLock}
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
                         style={{ flex: 1 }}
                     >
-                        Lock
+                        Refund
                     </div>
                     <div
                         className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
@@ -264,7 +287,7 @@ const Controls = ({ data }) => {
                         onClick={() => setShowMenu(!showMenu)}
                         style={{ flex: 1 }}
                     >
-                        Menu
+                        <FontAwesomeIcon icon={faBars} style={{ width: '25px', height: '25px' }} />
                     </div>
                 </div>
             </div>
