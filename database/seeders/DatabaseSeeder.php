@@ -78,8 +78,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < 10000000; $i++) {
-            \App\Models\Product::factory()->create([
+        $batchSize = 1000;
+        $total = 1000000;
+        $products = [];
+
+        for ($i = 0; $i < $total; $i++) {
+            $products[] = [
                 'department_id' => rand(1, count($departments)),
                 'group_id' => rand(1, count($groups)),
                 'barcode' => fake()->ean13(),
@@ -89,7 +93,19 @@ class DatabaseSeeder extends Seeder
                 'cost_price' => rand(1, 100),
                 'markup' => rand(1, 100),
                 'sale_price' => rand(1, 100),
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            if (count($products) === $batchSize) {
+                \App\Models\Product::insert($products);
+                $products = [];
+            }
+        }
+
+        // Insert any remaining products
+        if (!empty($products)) {
+            \App\Models\Product::insert($products);
         }
     }
 }

@@ -15,7 +15,6 @@ class PrinterController extends Controller
     public static function printReceipt($data)
     {
         return "
-Cashier: {$data['cashier_id']}
 Products: " . json_encode($data['products']) . "
 Total: {$data['total']}
 Total Discount: {$data['total_discount']}

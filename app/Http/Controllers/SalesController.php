@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Pail\Contracts\Printer;
 
-class SaleController extends Controller
+class SalesController extends Controller
 {
 
     public function getSales(Request $request)
@@ -34,7 +34,6 @@ class SaleController extends Controller
     {
         try {
             $data =  [
-                'cashier' => Auth::user(),
                 'products' => $request->input('products'),
                 'total' => $request->input('total'),
                 'total_discount' => $request->input('total_discount'),
@@ -42,9 +41,9 @@ class SaleController extends Controller
                 'total_payment' => $request->input('total_payment'),
                 'total_change' => $request->input('total_change'),
                 'mode_of_payment' => $request->input('mode_of_payment'),
-                'reference_number' => $request->input('reference_number'),
+                'reference_number' => time(),
             ];
-            Sale::create($data);
+            $sale = Sale::create(['cashier_id' => Auth::user()->id, ...$data]);
             return response()->json([
                 'message' => 'Checkout successful',
                 'business' => [
@@ -54,10 +53,17 @@ class SaleController extends Controller
                     'email' => config('business.email'),
                     'website' => config('business.website'),
                     'tax_id' => config('business.tax_id'),
+                    'vat_id' => config('business.vat_id'),
                 ],
-                'receipt' => PrinterController::printReceipt($data),
+                'receipt' => [
+                    'id' => $sale->id,
+                    'transaction_number' => str_pad($sale->id, 12, '0', STR_PAD_LEFT),
+                    'cashier' => Auth::user(),
+                    ...$data
+                ],
             ]);
         } catch (\Exception $e) {
+            Log::error($e);
             Log::error('Error handling request: ' . $e->getMessage());
             return response()->json(['error' => 'Internal server error'], 500);
         }

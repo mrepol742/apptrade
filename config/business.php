@@ -13,4 +13,6 @@ return [
     'website' => env('BUSINESS_WEBSITE', ''),
 
     'tax_id' => env('BUSINESS_TAX_ID', ''),
+
+    'vat_id' => env('BUSINESS_VAT_ID', ''),
 ];
