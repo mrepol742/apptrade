@@ -182,15 +182,13 @@ const Controls = ({ data }) => {
                         Cash
                     </div>
                     <div
-                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'credit' ? 'bg-primary border-primary' : 'border-secondary'}`}
-                        onClick={() => setPaymentMethod('credit')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'credit' ? 'bg-primary border-primary' : 'border-secondary'}  bg-secondary`}
                         style={{ flex: 1 }}
                     >
                         Credit Card
                     </div>
                     <div
-                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'debit' ? 'bg-primary border-primary' : 'border-secondary'}`}
-                        onClick={() => setPaymentMethod('debit')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'debit' ? 'bg-primary border-primary' : 'border-secondary'}  bg-secondary`}
                         style={{ flex: 1 }}
                     >
                         Debit Card
@@ -198,22 +196,19 @@ const Controls = ({ data }) => {
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-3 text-center">
                     <div
-                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'check' ? 'bg-primary border-primary' : 'border-secondary'}`}
-                        onClick={() => setPaymentMethod('check')}
+                        className={`rounded py-3 m-1 d-flex flex-column align-items-center border border-2 ${paymentMethod === 'check' ? 'bg-primary border-primary' : 'border-secondary'}  bg-secondary`}
                         style={{ flex: 1 }}
                     >
                         Check
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Gift Card')}
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
                         style={{ flex: 1 }}
                     >
                         Gift Card
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Voucher')}
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
                         style={{ flex: 1 }}
                     >
                         Voucher
@@ -230,8 +225,7 @@ const Controls = ({ data }) => {
                         Discount
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Gift Card')}
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
                         style={{ flex: 1 }}
                     >
                         Refund
@@ -253,8 +247,7 @@ const Controls = ({ data }) => {
                         Lock
                     </div>
                     <div
-                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary"
-                        onClick={() => alert('Gift Card')}
+                        className="rounded py-3 m-1 d-flex flex-column align-items-center border border-2 border-secondary bg-secondary"
                         style={{ flex: 1 }}
                     >
                         Transfer

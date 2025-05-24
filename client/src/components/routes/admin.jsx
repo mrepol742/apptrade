@@ -14,12 +14,6 @@ const _nav = [
     },
     {
         component: CNavItem,
-        name: 'Reports',
-        to: '/reports',
-        icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
-    },
-    {
-        component: CNavItem,
         name: 'Users',
         to: '/users',
         icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
@@ -34,6 +28,12 @@ const _nav = [
         component: CNavItem,
         name: 'Products',
         to: '/products',
+        icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
+    },
+    {
+        component: CNavItem,
+        name: 'Sales',
+        to: '/sales',
         icon: <FontAwesomeIcon icon={faGauge} className="me-2" />,
     },
 ]

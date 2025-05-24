@@ -83,6 +83,11 @@ const PaymentInput = ({ data }) => {
 
                     socket.onmessage = (event) => {
                         console.log('Server says:', event.data)
+                        const data = JSON.parse(event.data)
+                        // eslint-disable-next-line react/prop-types
+                        if (data.status !== 'success') toast.error('Failed to print receipt')
+                        // eslint-disable-next-line react/prop-types
+                        if (data.error) console.error(data.error)
                         socket.close()
                     }
 

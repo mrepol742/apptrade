@@ -17,7 +17,6 @@ import { logo } from 'src/assets/brand/logo'
 import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
-import navigation from '../_nav'
 import AdminSidebar from './routes/admin'
 import CashierSidebar from './routes/cashier'
 
@@ -34,7 +33,6 @@ const AppSidebar = () => {
         } else if (user.role === 'cashier') {
             return CashierSidebar
         }
-        return navigation
     }
 
     return (

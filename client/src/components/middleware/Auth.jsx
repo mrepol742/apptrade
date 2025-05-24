@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import AdminLayout from '../../layout/user/admin'
 import CashierLayout from '../../layout/user/cashier'
+import Products from '../../views/products'
 
 const Auth = () => {
     const [status, setStatus] = useState('loading')
@@ -48,6 +49,7 @@ const Auth = () => {
 
     if (['super_admin', 'admin'].includes(user.role)) return <AdminLayout />
     if (user.role === 'cashier') return <CashierLayout />
+    if (user.role === 'production') return <Products />
 
     return <>Hello world</>
 }

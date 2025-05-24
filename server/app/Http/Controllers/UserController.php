@@ -11,7 +11,7 @@ class UserController extends Controller
     /**
      * @var int
      */
-    protected $items = 100;
+    protected $items = 15;
 
     /**
      *

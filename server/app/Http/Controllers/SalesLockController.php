@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class SalesLock extends Controller
+class SalesLockController extends Controller
 {
     public function getSalesLock(Request $request)
     {
